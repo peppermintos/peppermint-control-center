@@ -18,9 +18,12 @@
 # 3. Push to github.
 #
 
-import os, sys, subprocess
+import os
+import sys
+import subprocess
 from gi.repository import Gtk
 import xml.etree.ElementTree as ET
+
 
 if not os.path.exists(os.path.expanduser("~/.config/peppermint-control-center/")):
     try:
@@ -58,7 +61,7 @@ if not os.path.exists(os.path.expanduser("~/.config/peppermint-control-center/xb
     except:
         print("ERROR: xbindkeys.conf does not exist and could not be generated.")
         sys.exit(1)
-    
+
 if not os.path.exists(os.path.expanduser("~/.config/xfce4/xfconf/xfce-perchannel-xml/xfwm4.xml")):
     try:
         os.system("cp /usr/share/peppermint/peppermint-control-center/xfwm4.xml ~/.config/xfce4/xfce-perchannel-xml/xfwm4.xml")
@@ -97,6 +100,7 @@ xfwm_file.close()
 ### Generic methods for getting/setting boolean values. ###
 ###########################################################
 
+
 def value_from_xml(a):
     for line in xfwm_data:
         if a in line:
@@ -107,11 +111,13 @@ def value_from_xml(a):
             f = e.split()
             return f[1]
 
+
 def get_generic(a):
     if value_from_xml('name="' + a + '"') == "true":
         return True
     else:
         return False
+
 
 def set_generic(widget, prop):
     if widget.get_active():
@@ -123,10 +129,12 @@ def set_generic(widget, prop):
 ### Methods for 'Window Manager' page. ###
 ##########################################
 
+
 # xfwm4 theme methods.
 def get_theme():
     return value_from_xml('name="theme"')
-    
+
+
 def theme_list():
     themelist = []
 
@@ -143,11 +151,14 @@ def theme_list():
 
     return sorted(themelist)
 
+
 def theme_index():
     return theme_list().index(get_theme())
 
+
 def set_theme(widget):
     os.system("xfconf-query -c xfwm4 -p /general/theme -s " + theme_box.get_active_text())
+
 
 # Title font methods.
 def get_title_font():
@@ -156,15 +167,18 @@ def get_title_font():
             a = line.replace('    <property name="title_font" type="string" value="', '')
             b = a.replace('"/>', '')
             return b.replace("\n", "")
-    
+
+
 def set_title_font(widget):
     os.system('xfconf-query -c xfwm4 -p /general/title_font -s "' + widget.get_font_name() + '"')
     widget.set_title(widget.get_font_name())
-    
+
+
 # Title alignment methods.
 def get_title_alignment():
     return value_from_xml('name="title_alignment"')
-    
+
+
 def alignment_index():
     a = get_title_alignment()
     if a == "left":
@@ -176,7 +190,8 @@ def alignment_index():
     else:
         print("ERROR: Alignment index out of range.")
         sys.exit(1)
-    
+
+
 def set_title_alignment(widget):
     a = alignment_box.get_active_text()
     if a == "Left":
@@ -188,21 +203,25 @@ def set_title_alignment(widget):
     else:
         print("ERROR: Alignment index out of range.")
         sys.exit(1)
-        
+
     os.system("xfconf-query -c xfwm4 -p /general/title_alignment -s " + b)
-    
+
+
 # Workspace count methods:
 
 def get_workspace_count():
     return int(value_from_xml('name="workspace_count"'))
-    
+
+
 def set_workspace_count(button):
     os.system("xfconf-query -c xfwm4 -p /general/workspace_count -s " + str(int(button.get_value())))
+
 
 # Click to focus methods.
 def get_click_to_focus():
     return value_from_xml('name="click_to_focus"')
-    
+
+
 def set_click_to_focus(button, value):
     if button.get_active():
         os.system("xfconf-query -c xfwm4 -p /general/click_to_focus -s " + value)
@@ -211,96 +230,124 @@ def set_click_to_focus(button, value):
     if value == "true":
         focus_delay_box.set_sensitive(False)
 
+
 # Focus Delay methods.
 def get_focus_delay():
     return int(value_from_xml('name="focus_delay"'))
-    
+
+
 def set_focus_delay(widget):
     os.system("xfconf-query -c xfwm4 -p /general/focus_delay -s " + str(int(focus_delay.get_value())))
+
 
 # New window focus methods.
 def get_focus_new():
     return get_generic("focus_new")
-        
+
+
 def set_focus_new(widget):
     set_generic(widget, "focus_new")
-    
+
+
 # Raise on focus methods.
 def get_raise_on_focus():
     return get_generic("raise_on_focus")
-        
+
+
 def set_raise_on_focus(widget):
     set_generic(widget, "raise_on_focus")
-    
+
+
 # Methods for focus raise delay.
 def get_raise_delay():
     return int(value_from_xml('name="raise_delay"'))
-    
+
+
 def set_raise_delay(widget):
     os.system("xfconf-query -c xfwm4 -p /general/raise_delay -s " + str(int(raise_delay.get_value())))
-    
+
+
 # Raise on click methods.
 def get_raise_on_click():
     return get_generic("raise_on_click")
-        
+
+
 def set_raise_on_click(widget):
     set_generic(widget, "raise_on_click")
-    
+
+
 # Window snapping methods.
 def get_snap_to_border():
     return get_generic("snap_to_border")
-        
+
+
 def set_snap_to_border(widget):
     set_generic(widget, "snap_to_border")
-    
+
+
 def get_snap_to_windows():
     return get_generic("snap_to_windows")
-    
+
+
 def set_snap_to_windows(widget):
     set_generic(widget, "snap_to_windows")
-    
+
+
 def get_snap_width():
     return int(value_from_xml('name="snap_width"'))
-    
+
+
 def set_snap_width(widget):
     os.system("xfconf-query -c xfwm4 -p /general/snap_width -s " + str(int(snap_width.get_value())))
-    
-# Workspace wrapping methods. 
+
+
+# Workspace wrapping methods.
 def get_wrap_workspaces():
     return get_generic("wrap_workspaces")
-    
+
+
 def set_wrap_workspaces(widget):
     set_generic(widget, "wrap_workspaces")
 
+
 def get_wrap_windows():
     return get_generic("wrap_windows")
-    
+
+
 def set_wrap_windows(widget):
     set_generic(widget, "wrap_windows")
 
+
 def get_wrap_resistance():
     return int(value_from_xml('name="wrap_resistance"'))
-    
+
+
 def set_wrap_resistance(widget):
     os.system("xfconf-query -c xfwm4 -p /general/wrap_resistance -s " + str(int(wrap_resistance.get_value())))
-    
+
+
 # Methods for hiding window content during transformations.
 def get_box_move():
     return get_generic("box_move")
-    
+
+
 def set_box_move(widget):
     set_generic(widget, "box_move")
 
+
 def get_box_resize():
     return get_generic("box_resize")
-    
+
+
 def set_box_resize(widget):
     set_generic(widget, "box_resize")
+
 
 # Title bar double click methods.
 def get_double_click_action():
     return value_from_xml('name="double_click_action"')
-    
+
+
 def set_double_click_action(button):
     a = double_click_action.get_active_text()
     if a == "Shade window":
@@ -317,7 +364,8 @@ def set_double_click_action(button):
         print("ERROR: Double click action index out of range.")
         sys.exit(1)
     os.system("xfconf-query -c xfwm4 -p /general/double_click_action -s " + b)
-    
+
+
 def double_click_action_index():
     a = get_double_click_action()
     if a == "shade":
@@ -338,94 +386,104 @@ def double_click_action_index():
 ### Methods for 'Pointer Options' page. ###
 ###########################################
 
+
 def get_acceleration():
     return int(pntr_data[2].split()[2])
-    
+
+
 def get_threshold():
     return int(pntr_data[2].split()[3])
-    
+
+
 def get_lefthanded():
     if (pntr_data[3][22] == "3"):
         return True
     else:
         return False
-        
+
+
 def get_touchenable():
     if (pntr_data[4][22] == "0"):
         return True
     else:
         return False
-        
+
+
 def get_taptoclick():
     if (pntr_data[7][21] == "1"):
         return True
     else:
         return False
-        
+
+
 def get_vertedge():
     if (pntr_data[5][25] == "1"):
         return True
     else:
         return False
-        
+
+
 def get_horizedge():
     if (pntr_data[6][26] == "1"):
         return True
     else:
         return False
-        
+
+
 def get_vtwofinger():
     if (pntr_data[8][30] == "1"):
         return True
     else:
         return False
-        
+
+
 def get_htwofinger():
     if (pntr_data[9][31] == "1"):
         return True
     else:
         return False
 
+
 # 'Apply Pointer Options' button.
 def pntr_apply(widget):
     acceleration_value = str(int(acceleration.get_value()))
     threshold_value = str(int(threshold.get_value()))
-    
+
     if lefthanded.get_active():
         lefthanded_value = "3 2 1"
     else:
         lefthanded_value = "1 2 3"
-        
+
     if touchenable.get_active():
         touchenable_value = "0"
     else:
         touchenable_value = "1"
-        
+
     if taptoclick.get_active():
         taptoclick_value = "1"
     else:
         taptoclick_value = "0"
-        
+
     if vertedge.get_active():
         vertedge_value = "1"
     else:
         vertedge_value = "0"
-        
+
     if horizedge.get_active():
         horizedge_value = "1"
     else:
         horizedge_value = "0"
-        
+
     if vtwofinger.get_active():
         vtwofinger_value = "1"
     else:
         vtwofinger_value = "0"
-        
+
     if htwofinger.get_active():
         htwofinger_value = "1"
     else:
         htwofinger_value = "0"
-            
+
     try:
         with open(os.path.expanduser("~/.config/peppermint-control-center/pointer"), 'w') as conf:
             conf.truncate()
@@ -442,30 +500,35 @@ def pntr_apply(widget):
     except:
         print("ERROR: Could not save new configuration.")
         sys.exit(1)
-        
+
     try:
         os.system("ppmcc-load")
     except:
         print("ERROR: Could not load new configuration.")
         sys.exit(1)
 
+
 def get_delay():
     return int(keys_data[2].split()[3])
-    
+
+
 def get_interval():
     return int(keys_data[2].split()[4])
-    
+
+
 def lxkeymap(widget):
     os.system("lxkeymap &")
+
 
 def layoutsetter(widget):
     win = SetLayout()
     win.show_all()
 
+
 def keys_apply(widget):
     delay_value = str(int(delay.get_value()))
     interval_value = str(int(interval.get_value()))
-    
+
     try:
         with open(os.path.expanduser("~/.config/peppermint-control-center/keyboard"), 'w') as conf:
             conf.truncate()
@@ -475,7 +538,7 @@ def keys_apply(widget):
     except:
         print("ERROR: Could not save new configuration.")
         sys.exit(1)
-        
+
     try:
         os.system("ppmcc-load")
     except:
@@ -486,17 +549,20 @@ def keys_apply(widget):
 ### Methods for 'Keyboard Shortcuts' page. ###
 ##############################################
 
+
 # Swap out encoded strings for human readable characters.
 def encodereplace(a):
     b = a.replace("&lt;", "<")
     c = b.replace("&gt;", ">")
     return c
 
+
 # Swap out human readable characters for encoded strings.
 def unencodereplace(a):
     b = a.replace("<", "&lt;")
     c = b.replace(">", "&gt;")
     return c
+
 
 # Format the xml data into a more human readable form.
 def xmlformat(a):
@@ -507,6 +573,7 @@ def xmlformat(a):
     kpad = disp.replace("KP_", "")
     return encodereplace(kpad).replace("Primary", "Control")
 
+
 # Match the xbindkeys format to the xfce4 format.
 def bindformat(a):
     b = a.replace("Alt", "<Alt>")
@@ -515,6 +582,7 @@ def bindformat(a):
     e = d.replace("Shift", "<Shift>")
     return e.replace("+", "")
 
+
 # Return the xfce4 format to native xbindkeys format.
 def unbindformat(a):
     b = a.replace("<Alt>", "Alt + ")
@@ -522,6 +590,7 @@ def unbindformat(a):
     d = c.replace("<Control>", "Control + ")
     e = d.replace("<Shift>", "Shift + ")
     return e
+
 
 # Return a list of all valid shortcuts in xfce4-keyboard-shortcuts.xml.
 def get_xfce_shortcuts():
@@ -536,6 +605,7 @@ def get_xfce_shortcuts():
                 continue
 
     return xfceline
+
 
 # This works as long as xbindkeys-config is not used and the user does
 # not edit the config file. We should launch xbindkeys in Peppermint
@@ -565,6 +635,7 @@ def get_xbindkeys():
 
     return bindline
 
+
 def edit_xfce_shortcut(selection, path, column):
     global workspace
     workspace = "xfce"
@@ -577,6 +648,7 @@ def edit_xfce_shortcut(selection, path, column):
     shortcut = KeyboardShortcut(store, treeiter)
     shortcut.show_all()
 
+
 def edit_bind_shortcut(selection, path, column):
     global workspace
     workspace = "bind"
@@ -588,14 +660,14 @@ def edit_bind_shortcut(selection, path, column):
     treeiter = store.get_iter(path)
     shortcut = KeyboardShortcut(store, treeiter)
     shortcut.show_all()
-    
+
+
 def set_xfce_shortcut(command, shortcut):
     new0 = shortcut.replace("Control", "Primary")
     new1 = new0.replace("Space", "space")
-    #print('xfconf-query -c xfce4-keyboard-shortcuts -p "/xfwm4/custom/' + oldcommand + '" -r')
     os.system('xfconf-query -c xfce4-keyboard-shortcuts -p "/xfwm4/custom/' + oldcommand + '" -r')
-    #print('xfconf-query -c xfce4-keyboard-shortcuts -p "/xfwm4/custom/' + new1 + '" -n -t string -s ' + command)
     os.system('xfconf-query -c xfce4-keyboard-shortcuts -p "/xfwm4/custom/' + new1 + '" -n -t string -s ' + command)
+
 
 ################################################################################################
 ### To Do: This will require more formatting as it has a bazillion possible breaking points. ###
@@ -617,11 +689,12 @@ def set_bind_shortcut(command, shortcut, store):
         new3 = new2.replace("<Super>", "Mod4+")
         new4 = new3.replace("<Shift>", "Shift+")
         conf.write('"' + line[0] + '"' + "\n    " + new4 + "\n\n")
-    
+
     conf.close()
     os.system("killall xbindkeys")
     os.system("xbindkeys -f ~/.config/peppermint-control-center/xbindkeys.conf")
-        
+
+
 def refresh_bind_shortcuts():
     bindlist = []
     for item in bindstore:
@@ -636,99 +709,124 @@ def refresh_bind_shortcuts():
         new3 = new2.replace("<Super>", "Mod4+")
         new4 = new3.replace("<Shift>", "Shift+")
         conf.write('"' + line[0] + '"' + "\n    " + new4 + "\n\n")
-    
+
     conf.close()
     os.system("killall xbindkeys")
     os.system("xbindkeys -f ~/.config/peppermint-control-center/xbindkeys.conf")
 
+
 def action_bind_new(widget, liststore):
     new = NewShortcut(liststore)
     new.show_all()
+
 
 def action_bind_restore(widget):
     action = "bind-restore"
     command = "cp -f /usr/share/peppermint/peppermint-control-center/xbindkeys.conf ~/.config/peppermint-control-center/xbindkeys.conf"
     confirm = AreYouSure(action, command)
     confirm.show_all()
-    
+
+
 def action_xfce_restore(widget):
     action = "xfce-restore"
     command = ""
     confirm = AreYouSure(action, command)
     confirm.show_all()
-    
+
 ###########################################
 ### Methods for 'Desktop Effects' page. ###
 ###########################################
 
+
 def get_use_compositing():
     return get_generic("use_compositing")
-    
+
+
 def set_use_compositing(widget):
     set_generic(widget, "use_compositing")
     if widget.get_active() == True:
         effects_box.set_sensitive(True)
     elif widget.get_active() == False:
         effects_box.set_sensitive(False)
-    
+
+
 # CheckButtons
 def get_unredirect_overlays():
     return get_generic("unredirect_overlays")
-    
+
+
 def set_unredirect_overlays(widget):
     set_generic(widget, "unredirect_overlays")
-    
+
+
 def get_sync_to_vblank():
     return get_generic("sync_to_vblank")
-    
+
+
 def set_sync_to_vblank(widget):
     set_generic(widget, "sync_to_vblank")
-    
+
+
 def get_show_popup_shadow():
     return get_generic("show_popup_shadow")
-    
+
+
 def set_show_popup_shadow(widget):
     set_generic(widget, "show_popup_shadow")
 
+
 def get_show_dock_shadow():
     return get_generic("show_dock_shadow")
-    
+
+
 def set_show_dock_shadow(widget):
     set_generic(widget, "show_dock_shadow")
 
+
 def get_show_frame_shadow():
     return get_generic("show_frame_shadow")
-    
+
+
 def set_show_frame_shadow(widget):
     set_generic(widget, "show_frame_shadow")
-    
+
+
 # HScales
 def get_frame_opacity():
     return int(value_from_xml('name="frame_opacity"'))
 
+
 def set_frame_opacity(widget):
     os.system("xfconf-query -c xfwm4 -p /general/frame_opacity -s " + str(int(widget.get_value())))
+
 
 def get_inactive_opacity():
     return int(value_from_xml('name="inactive_opacity"'))
 
+
 def set_inactive_opacity(widget):
     os.system("xfconf-query -c xfwm4 -p /general/inactive_opacity -s " + str(int(widget.get_value())))
+
 
 def get_move_opacity():
     return int(value_from_xml('name="move_opacity"'))
 
+
 def set_move_opacity(widget):
     os.system("xfconf-query -c xfwm4 -p /general/move_opacity -s " + str(int(widget.get_value())))
+
 
 def get_resize_opacity():
     return int(value_from_xml('name="resize_opacity"'))
 
+
 def set_resize_opacity(widget):
     os.system("xfconf-query -c xfwm4 -p /general/resize_opacity -s " + str(int(widget.get_value())))
 
+
 def get_popup_opacity():
     return int(value_from_xml('name="popup_opacity"'))
+
 
 def set_popup_opacity(widget):
     os.system("xfconf-query -c xfwm4 -p /general/popup_opacity -s " + str(int(widget.get_value())))
@@ -737,89 +835,115 @@ def set_popup_opacity(widget):
 ### Methods for 'Advanced' page. ###
 ####################################
 
+
 # Window cycling
 def get_cycle_minimum():
     return get_generic("cycle_minimum")
 
+
 def set_cycle_minimum(widget):
     set_generic(widget, "cycle_minimum")
-    
+
+
 def get_cycle_hidden():
     return get_generic("cycle_hidden")
-    
+
+
 def set_cycle_hidden(widget):
     set_generic(widget, "cycle_hidden")
 
+
 def get_cycle_workspaces():
     return get_generic("cycle_workspaces")
-    
+
+
 def set_cycle_workspaces(widget):
     set_generic(widget, "cycle_workspaces")
 
+
 def get_cycle_draw_frame():
     return get_generic("cycle_draw_frame")
-    
+
+
 def set_cycle_draw_frame(widget):
     set_generic(widget, "cycle_draw_frame")
+
 
 # Window focus
 def get_prevent_focus_stealing():
     return get_generic("prevent_focus_stealing")
-    
+
+
 def set_prevent_focus_stealing(widget):
     set_generic(widget, "prevent_focus_stealing")
-    
+
+
 def get_focus_hint():
     return get_generic("focus_hint")
-    
+
+
 def set_focus_hint(widget):
     set_generic(widget, "focus_hint")
 
+
 def get_activate_action():
     return value_from_xml('name="activate_action"')
-    
+
+
 def set_activate_action(button, value):
     if button.get_active():
         os.system("xfconf-query -c xfwm4 -p /general/activate_action -s " + value)
-        
+
+
 # Accessibility
 def get_raise_with_any_button():
     return get_generic("raise_with_any_button")
-    
+
+
 def set_raise_with_any_button(widget):
     set_generic(widget, "raise_with_any_button")
-    
+
+
 def get_borderless_maximize():
     return get_generic("borderless_maximize")
-    
+
+
 def set_borderless_maximize(widget):
     set_generic(widget, "borderless_maximize")
-    
+
+
 def get_restore_on_move():
     return get_generic("restore_on_move")
-    
+
+
 def set_restore_on_move(widget):
     set_generic(widget, "restore_on_move")
     if widget.get_active() == True:
         tile_on_move.set_sensitive(True)
     elif widget.get_active() == False:
         tile_on_move.set_sensitive(False)
-    
+
+
 def get_tile_on_move():
     return get_generic("tile_on_move")
-    
+
+
 def set_tile_on_move(widget):
     set_generic(widget, "tile_on_move")
-    
+
+
 def get_snap_resist():
     return get_generic("snap_resist")
-    
+
+
 def set_snap_resist(widget):
     set_generic(widget, "snap_resist")
-    
+
+
 def get_urgent_blink():
     return get_generic("urgent_blink")
-    
+
+
 def set_urgent_blink(widget):
     set_generic(widget, "urgent_blink")
     if widget.get_active() == True:
@@ -828,68 +952,82 @@ def set_urgent_blink(widget):
         repeat_urgent_blink.set_sensitive(False)
         repeat_urgent_blink.set_active(False)
         set_repeat_urgent_blink_off()
-    
+
+
 def get_repeat_urgent_blink():
     return get_generic("repeat_urgent_blink")
-    
+
+
 def set_repeat_urgent_blink(widget):
     set_generic(widget, "repeat_urgent_blink")
-    
+
+
 def set_repeat_urgent_blink_off():
     os.system("xfconf-query -c xfwm4 -p /general/repeat_urgent_blink -s false")
-    
+
+
 def get_mousewheel_rollup():
     return get_generic("mousewheel_rollup")
-    
+
+
 def set_mousewheel_rollup(widget):
     set_generic(widget, "mousewheel_rollup")
-        
+
+
 # Workspaces
 def get_scroll_workspaces():
     return get_generic("scroll_workspaces")
-    
+
+
 def set_scroll_workspaces(widget):
     set_generic(widget, "scroll_workspaces")
-    
+
+
 def get_wrap_layout():
     return get_generic("wrap_layout")
-    
+
+
 def set_wrap_layout(widget):
     set_generic(widget, "wrap_layout")
-    
+
+
 # Window placement
 def get_placement_ratio():
     return int(value_from_xml("placement_ratio"))
-    
+
+
 def set_placement_ratio(widget):
     os.system("xfconf-query -c xfwm4 -p /general/placement_ratio -s " + str(int(widget.get_value())))
-    
+
+
 def get_placement_mode():
     return value_from_xml("placement_mode")
-    
+
+
 def set_placement_mode(button, value):
     if button.get_active():
         os.system("xfconf-query -c xfwm4 -p /general/placement_mode -s " + value)
 
+
 # 'Are you sure?' window.
 class AreYouSure(Gtk.Window):
-    
+
     def close_it(self, widget):
         self.close()
-        
+
     def confirm(self, widget, action, command):
         if action == "bind-restore":
             os.system(command)
             os.system("killall xbindkeys")
             os.system("xbindkeys -f ~/.config/peppermint-control-center/xbindkeys.conf")
-            
+
             bindview.set_model(None)
             bindstore.clear()
             get_bind = get_xbindkeys()
             for line in get_bind:
                 a = line.split("\n")
                 bindstore.append([a[0], a[1]])
-                
+
             bindview.set_model(bindstore)
 
             self.close()
@@ -899,15 +1037,15 @@ class AreYouSure(Gtk.Window):
             bindstore.remove(command)
             refresh_bind_shortcuts()
             self.close()
-        
+
     def __init__(self, action, command):
         Gtk.Window.__init__(self, title="Confirm")
         self.set_size_request(250, 120)
         self.set_icon_from_file("/usr/share/pixmaps/peppermint-control-center.png")
-        
+
         label = Gtk.Label()
         label.set_markup("<b>Are you sure you want to perform this action?</b>")
-        
+
         buttons = Gtk.HBox()
         void = Gtk.Label()
         no = Gtk.Button.new_from_stock(Gtk.STOCK_NO)
@@ -917,7 +1055,7 @@ class AreYouSure(Gtk.Window):
         buttons.pack_start(void, True, True, 0)
         buttons.pack_start(no, False, False, 10)
         buttons.pack_start(yes, False, False, 0)
-        
+
         vbox = Gtk.VBox()
         vbox.pack_start(label, True, True, 0)
         vbox.pack_start(buttons, False, False, 10)
@@ -925,11 +1063,12 @@ class AreYouSure(Gtk.Window):
         hbox.pack_start(vbox, True, True, 10)
         self.add(hbox)
 
+
 class SetLayout(Gtk.Window):
-    
+
     def close_it(self, widget):
         self.close()
-        
+
     def revert_it(self, widget, command):
         execute = "setxkbmap " + command
         os.system(execute)
@@ -940,19 +1079,19 @@ class SetLayout(Gtk.Window):
     def getlist(self):
         layoutfile = ET.parse("/usr/share/X11/xkb/rules/base.xml")
         root = layoutfile.getroot()
-        
+
         layoutlist = []
-        
+
         for child in root.iter('layout'):
             name = ""
             sublist = []
-            
+
             for item in child.findall('configItem'):
                 name = item.find('name').text
                 command = name
                 desc = item.find('description').text
                 sublist.append([command, desc])
-                
+
             for variantList in child.findall('variantList'):
                 for variant in variantList.findall('variant'):
                     for item in variant.findall('configItem'):
@@ -960,9 +1099,9 @@ class SetLayout(Gtk.Window):
                         command = name + " " + varname
                         vardesc = item.find('description').text
                         sublist.append([command, vardesc])
-                        
+
             layoutlist.append([name, sublist])
-        
+
         return sorted(layoutlist)
 
     def fill_variants(self, widget):
@@ -981,7 +1120,7 @@ class SetLayout(Gtk.Window):
                 variantview.set_cursor(x)
                 variantview.scroll_to_cell(x)
             x = x + 1
-        
+
     def set_layout(self, widget, var):
         try:
             select = variantview.get_selection()
@@ -993,7 +1132,7 @@ class SetLayout(Gtk.Window):
             os.system('echo "#!/bin/sh\n' + execute + '" > ~/.config/peppermint-control-center/keyboard_layout')
         except:
             pass
-        
+
     def get_current(self):
         command = ""
         cl = subprocess.Popen('setxkbmap -query | grep layout', shell=True, stdout=subprocess.PIPE)
@@ -1002,36 +1141,36 @@ class SetLayout(Gtk.Window):
             cl1 = curlay.split()
             current_layout = cl1[1].replace("\\n'", "")
             command = command + current_layout
-        
+
         cv = subprocess.Popen('setxkbmap -query | grep variant', shell=True, stdout=subprocess.PIPE)
         curvar = str(cv.stdout.read())
         if "variant:" in curvar:
             cv1 = curvar.split()
             current_variant = cv1[1].replace("\\n'", "")
             command = command + " " + current_variant
-            
+
         return current_layout, command
-            
+
     def __init__(self):
         Gtk.Window.__init__(self, title="Select Keyboard Layout")
         self.set_size_request(600, 480)
         self.set_icon_from_file("/usr/share/pixmaps/peppermint-control-center.png")
-        
+
         global cl, cm
         cl, cm = self.get_current()
         oldcommand = cm
-        
+
         global layoutstore
         layoutstore = Gtk.ListStore(str)
         global variantstore
         variantstore = Gtk.ListStore(str, str)
-        
+
         global layoutview
         layoutview = Gtk.TreeView(layoutstore)
         layout = Gtk.CellRendererText()
         layoutcolumn = Gtk.TreeViewColumn("Layout", layout, text=0)
         layoutview.append_column(layoutcolumn)
-        
+
         global variantview
         variantview = Gtk.TreeView(variantstore)
         variant = Gtk.CellRendererText()
@@ -1042,22 +1181,22 @@ class SetLayout(Gtk.Window):
         variantcolumn.add_attribute(variant, "text", 0)
         variantcolumn.add_attribute(description, "text", 1)
         variantview.append_column(variantcolumn)
-        
+
         layouts = self.getlist()
         for layout in layouts:
             a = layout[0]
             layoutstore.append([a])
-        
+
         select = layoutview.get_selection()
         select.connect("changed", self.fill_variants)
-        
+
         x = 0
         for obj in layoutstore:
             if str(obj[0]) == cl:
                 layoutview.set_cursor(x)
                 layoutview.scroll_to_cell(x)
             x = x + 1
-        
+
         layoutbox = Gtk.HBox()
         layoutscroll = Gtk.ScrolledWindow()
         variantscroll = Gtk.ScrolledWindow()
@@ -1082,7 +1221,7 @@ class SetLayout(Gtk.Window):
         buttons.pack_start(applyb, False, False, 0)
         buttons.pack_start(revert, False, False, 10)
         buttons.pack_start(cancel, False, False, 0)
-        
+
         vbox = Gtk.VBox()
         vbox.pack_start(layoutbox, True, True, 0)
         vbox.pack_start(buttons, False, False, 10)
@@ -1090,12 +1229,13 @@ class SetLayout(Gtk.Window):
         hbox.pack_start(vbox, True, True, 10)
         self.add(hbox)
 
+
 # Add new shortcut window.
 class NewShortcut(Gtk.Window):
-    
+
     def close_it(self, widget):
         self.close()
-        
+
     def add_shortcut(self, widget, liststore):
         global oldcommand
         oldcommand = ""
@@ -1111,17 +1251,17 @@ class NewShortcut(Gtk.Window):
         self.close()
         a = KeyboardShortcut(liststore, treeiter)
         a.show_all()
-        
+
     def __init__(self, liststore):
         Gtk.Window.__init__(self, title="Add New Shortcut")
         self.set_size_request(250, 120)
         self.set_icon_from_file("/usr/share/pixmaps/peppermint-control-center.png")
-        
+
         label = Gtk.Label("Enter the command to execute:")
-        
+
         global newcommand
         newcommand = Gtk.Entry()
-        
+
         buttons = Gtk.HBox()
         button_void = Gtk.Label()
         button_okay = Gtk.Button.new_from_stock(Gtk.STOCK_OK)
@@ -1131,7 +1271,7 @@ class NewShortcut(Gtk.Window):
         buttons.pack_start(button_void, True, True, 0)
         buttons.pack_start(button_cancel, False, False, 10)
         buttons.pack_start(button_okay, False, False, 0)
-        
+
         vbox = Gtk.VBox()
         vbox.pack_start(label, True, True, 10)
         vbox.pack_start(newcommand, False, False, 0)
@@ -1140,9 +1280,10 @@ class NewShortcut(Gtk.Window):
         hbox.pack_start(vbox, True, True, 10)
         self.add(hbox)
 
+
 # Keyboard Shortcut selection window.
 class KeyboardShortcut(Gtk.Window):
-    
+
     def close_it(self, widget):
         self.close()
 
@@ -1154,9 +1295,12 @@ class KeyboardShortcut(Gtk.Window):
         confirm.show_all()
 
     def set_shortcut(self, widget, store, treeiter):
-            
+
         newkey = keybox_entry.get_text()
-        array = ["F1", "F2", "F3", "F4", "F5", "F6", "F7", "F8", "F9", "F10", "F12", "`", "1", "2", "3", "4", "5", "6", "7", "8", "9", "0", "-", "=", "q", "w", "e", "r", "t", "y", "u", "i", "o", "p", "[", "]", "a", "s", "d", "f", "g", "h", "j", "k", "l", ";", "'", "z", "x", "c", "v", "b", "n", "m", ",", ".", "/", "\\", "Space", "Tab", "Up", "Down", "Left", "Right"]
+        array = ["F1", "F2", "F3", "F4", "F5", "F6", "F7", "F8", "F9", "F10", "F12", "`", "1", "2", "3", "4", "5", "6",
+                 "7", "8", "9", "0", "-", "=", "q", "w", "e", "r", "t", "y", "u", "i", "o", "p", "[", "]", "a", "s",
+                 "d", "f", "g", "h", "j", "k", "l", ";", "'", "z", "x", "c", "v", "b", "n", "m", ",", ".", "/", "\\",
+                 "Space", "Tab", "Up", "Down", "Left", "Right"]
         newshortcut = ""
         if newkey == " ":
             newkey = "Space"
@@ -1170,7 +1314,7 @@ class KeyboardShortcut(Gtk.Window):
                 newshortcut = newshortcut + "<Super>"
             if _alt.get_active():
                 newshortcut = newshortcut + "<Alt>"
-                
+
             if _shift.get_active() == False and _control.get_active() == False and _super.get_active() == False and _alt.get_active() == False:
                 assign_void.set_markup("<b>Specify modifier(s)</b>")
             else:
@@ -1188,12 +1332,12 @@ class KeyboardShortcut(Gtk.Window):
                 self.close()
         else:
             assign_void.set_markup("<b>Invalid character</b>")
-            
+
     def __init__(self, store, treeiter):
         Gtk.Window.__init__(self, title="Assign New Shortcut")
         self.set_size_request(250, 120)
         self.set_icon_from_file("/usr/share/pixmaps/peppermint-control-center.png")
-        
+
         buttons = Gtk.HBox()
         global _shift
         _shift = Gtk.ToggleButton("Shift")
@@ -1203,11 +1347,11 @@ class KeyboardShortcut(Gtk.Window):
         _super = Gtk.ToggleButton("Super")
         global _alt
         _alt = Gtk.ToggleButton("Alt")
-        buttons.pack_start(_shift , True, True, 5)
-        buttons.pack_start(_control , True, True, 5)
-        buttons.pack_start(_super , True, True, 5)
-        buttons.pack_start(_alt , True, True, 5)
-        
+        buttons.pack_start(_shift, True, True, 5)
+        buttons.pack_start(_control, True, True, 5)
+        buttons.pack_start(_super, True, True, 5)
+        buttons.pack_start(_alt, True, True, 5)
+
         keybox = Gtk.HBox()
         keybox_label = Gtk.Label("Enter a valid character:")
         keybox_space = Gtk.Label(" ")
@@ -1216,7 +1360,7 @@ class KeyboardShortcut(Gtk.Window):
         keybox.pack_start(keybox_label, False, False, 0)
         keybox.pack_start(keybox_space, False, False, 5)
         keybox.pack_start(keybox_entry, True, True, 0)
-        
+
         assign = Gtk.HBox()
         global assign_void
         assign_void = Gtk.Label()
@@ -1230,24 +1374,25 @@ class KeyboardShortcut(Gtk.Window):
         assign.pack_start(bind_delete, False, False, 0)
         assign.pack_start(assign_cancel, False, False, 5)
         assign.pack_start(assign_apply, False, False, 0)
-        
+
         shortvbox = Gtk.VBox()
         shortvbox.pack_start(buttons, True, False, 5)
         shortvbox.pack_start(keybox, True, False, 5)
         shortvbox.pack_start(assign, True, False, 5)
         shorthbox = Gtk.HBox()
         shorthbox.pack_start(shortvbox, True, True, 10)
-        
+
         self.add(shorthbox)
+
 
 # Window and window layout.
 class ControlCenter(Gtk.Window):
-    
+
     def __init__(self):
         Gtk.Window.__init__(self, title="Peppermint Control Center")
         self.set_size_request(600, 500)
         self.set_icon_from_file("/usr/share/pixmaps/peppermint-control-center.png")
-        
+
         ##############################
         ### 'Window Manager' page. ###
         ##############################
@@ -1257,7 +1402,7 @@ class ControlCenter(Gtk.Window):
         page_wman_hbox.pack_start(page_wman, True, True, 10)
         scroll_wman = Gtk.ScrolledWindow()
         scroll_wman.add(page_wman_hbox)
-                
+
         theme_label = Gtk.Label()
         theme_label.set_markup("<b>Theme</b>")
         theme_void = Gtk.Label(" ")
@@ -1272,7 +1417,7 @@ class ControlCenter(Gtk.Window):
         theme_box.set_active(theme_index())
         theme_box_wrapper = Gtk.HBox()
         theme_box_wrapper.pack_start(theme_box, True, True, 20)
-        
+
         title_font_label = Gtk.Label()
         title_font_label.set_markup("<b>Title font</b>")
         title_font_void = Gtk.Label(" ")
@@ -1285,7 +1430,7 @@ class ControlCenter(Gtk.Window):
         title_font.connect("font-set", set_title_font)
         title_font_wrapper = Gtk.HBox()
         title_font_wrapper.pack_start(title_font, True, True, 20)
-        
+
         title_alignment_label = Gtk.Label()
         title_alignment_label.set_markup("<b>Title alignment</b>")
         title_alignment_void = Gtk.Label(" ")
@@ -1301,7 +1446,7 @@ class ControlCenter(Gtk.Window):
         alignment_box.set_active(alignment_index())
         alignment_box_wrapper = Gtk.HBox()
         alignment_box_wrapper.pack_start(alignment_box, True, True, 20)
-        
+
         workspace_count_label = Gtk.Label()
         workspace_count_label.set_markup("<b>Number of workspaces:</b>")
         workspace_count_adj = Gtk.Adjustment(0, 1, 100, 1, 10, 0)
@@ -1314,7 +1459,7 @@ class ControlCenter(Gtk.Window):
         workspace_count_box = Gtk.HBox()
         workspace_count_box.pack_start(workspace_count_label, False, False, 10)
         workspace_count_box.pack_start(workspace_count, False, False, 10)
-        
+
         global focus_delay_box
         focus_delay_box = Gtk.HBox()
         focus_delay_wrapper = Gtk.HBox()
@@ -1338,7 +1483,7 @@ class ControlCenter(Gtk.Window):
         click_to_focus = Gtk.HBox()
         click_to_focus.pack_start(ctf_button1, True, True, 30)
         click_to_focus.pack_start(ctf_button2, True, True, 30)
-        
+
         focus_delay_label_box = Gtk.HBox()
         focus_delay_label = Gtk.Label("Delay before window receives focus:")
         focus_delay_void = Gtk.Label(" ")
@@ -1360,7 +1505,7 @@ class ControlCenter(Gtk.Window):
         focus_delay_box.pack_start(focus_delay_long, False, False, 0)
         if ctf_button1.get_active():
             focus_delay_box.set_sensitive(False)
-                        
+
         focus_new_label_box = Gtk.HBox()
         focus_new_label = Gtk.Label()
         focus_new_label.set_markup("<b>New window focus</b>")
@@ -1373,7 +1518,7 @@ class ControlCenter(Gtk.Window):
         focus_new.connect("toggled", set_focus_new)
         focus_new_wrapper = Gtk.HBox()
         focus_new_wrapper.pack_start(focus_new, True, True, 30)
-        
+
         global raise_delay_box
         raise_delay_box = Gtk.HBox()
         raise_delay_wrapper = Gtk.HBox()
@@ -1391,7 +1536,7 @@ class ControlCenter(Gtk.Window):
         raise_on_focus.connect("toggled", set_raise_on_focus)
         raise_on_focus_wrapper = Gtk.HBox()
         raise_on_focus_wrapper.pack_start(raise_on_focus, True, True, 30)
-        
+
         raise_delay_label_box = Gtk.HBox()
         raise_delay_label_wrapper = Gtk.HBox()
         raise_delay_label_wrapper.pack_start(raise_delay_label_box, True, True, 30)
@@ -1413,7 +1558,7 @@ class ControlCenter(Gtk.Window):
         raise_delay_box.pack_start(raise_delay_short, False, False, 0)
         raise_delay_box.pack_start(raise_delay, True, True, 10)
         raise_delay_box.pack_start(raise_delay_long, False, False, 0)
-        
+
         raise_on_click_label_box = Gtk.HBox()
         raise_on_click_label = Gtk.Label()
         raise_on_click_label.set_markup("<b>Raise on click</b>")
@@ -1426,7 +1571,7 @@ class ControlCenter(Gtk.Window):
         raise_on_click.connect("toggled", set_raise_on_click)
         raise_on_click_wrapper = Gtk.HBox()
         raise_on_click_wrapper.pack_start(raise_on_click, True, True, 30)
-        
+
         snap_label_box = Gtk.HBox()
         snap_label = Gtk.Label()
         snap_label.set_markup("<b>Window Snapping</b>")
@@ -1444,7 +1589,7 @@ class ControlCenter(Gtk.Window):
         snap_to_wrapper = Gtk.HBox()
         snap_to_wrapper.pack_start(snap_to_border, True, True, 30)
         snap_to_wrapper.pack_start(snap_to_windows, True, True, 30)
-        
+
         global snap_width_box
         snap_width_box = Gtk.HBox()
         snap_width_wrapper = Gtk.HBox()
@@ -1468,8 +1613,8 @@ class ControlCenter(Gtk.Window):
         snap_width.connect("value-changed", set_snap_width)
         snap_width_box.pack_start(snap_width_small, False, False, 0)
         snap_width_box.pack_start(snap_width, True, True, 10)
-        snap_width_box.pack_start(snap_width_wide, False, False, 0)        
-        
+        snap_width_box.pack_start(snap_width_wide, False, False, 0)
+
         wrap_label_box = Gtk.HBox()
         wrap_label = Gtk.Label()
         wrap_label.set_markup("<b>Wrap workspaces when reaching the screen edge</b>")
@@ -1511,8 +1656,8 @@ class ControlCenter(Gtk.Window):
         wrap_resistance.connect("value-changed", set_wrap_resistance)
         wrap_resistance_box.pack_start(wrap_resistance_small, False, False, 0)
         wrap_resistance_box.pack_start(wrap_resistance, True, True, 10)
-        wrap_resistance_box.pack_start(wrap_resistance_wide, False, False, 0)        
-        
+        wrap_resistance_box.pack_start(wrap_resistance_wide, False, False, 0)
+
         box_label_box = Gtk.HBox()
         box_label = Gtk.Label()
         box_label.set_markup("<b>Hide content of windows</b>")
@@ -1551,14 +1696,14 @@ class ControlCenter(Gtk.Window):
         double_click_box.pack_start(double_click_action, True, True, 30)
 
         wmimage = Gtk.Image()
-        wmimage.set_from_file("/usr/lib/peppermint/peppermint-control-center/images/wm.png") # temporary
+        wmimage.set_from_file("/usr/lib/peppermint/peppermint-control-center/images/wm.png")  # temporary
         wmimage_label = Gtk.Label("Configure window manager\nbehavior and options")
         wmimage_label.set_justify(Gtk.Justification.CENTER)
 
         box_wmimage = Gtk.VBox()
         box_wmimage.pack_start(wmimage, True, True, 10)
         box_wmimage.pack_start(wmimage_label, True, True, 0)
-        
+
         box_theme = Gtk.VBox()
         box_theme.pack_start(theme_label_wrapper, False, False, 4)
         box_theme.pack_start(theme_box_wrapper, False, False, 4)
@@ -1567,7 +1712,7 @@ class ControlCenter(Gtk.Window):
         box_theme.pack_start(title_alignment_label_wrapper, False, False, 4)
         box_theme.pack_start(alignment_box_wrapper, False, False, 4)
         box_theme.pack_start(workspace_count_box, False, False, 10)
-        
+
         box_top = Gtk.HBox()
         box_top.pack_start(box_wmimage, False, False, 30)
         box_top.pack_start(box_theme, True, True, 0)
@@ -1581,33 +1726,33 @@ class ControlCenter(Gtk.Window):
         box_focus_new = Gtk.VBox()
         box_focus_new.pack_start(focus_new_label_box, False, False, 4)
         box_focus_new.pack_start(focus_new_wrapper, False, False, 4)
-        
+
         box_raise = Gtk.VBox()
         box_raise.pack_start(raise_on_focus_label_box, False, False, 4)
         box_raise.pack_start(raise_on_focus_wrapper, False, False, 4)
         box_raise.pack_start(raise_delay_label_wrapper, False, False, 4)
         box_raise.pack_start(raise_delay_wrapper, False, False, 4)
-        
+
         box_click = Gtk.VBox()
         box_click.pack_start(raise_on_click_label_box, False, False, 4)
         box_click.pack_start(raise_on_click_wrapper, False, False, 4)
-        
+
         box_snap = Gtk.VBox()
         box_snap.pack_start(snap_label_box, False, False, 4)
         box_snap.pack_start(snap_to_wrapper, False, False, 4)
         box_snap.pack_start(snap_width_label_wrapper, False, False, 4)
         box_snap.pack_start(snap_width_wrapper, False, False, 4)
-        
+
         box_wrap = Gtk.VBox()
         box_wrap.pack_start(wrap_label_box, False, False, 4)
         box_wrap.pack_start(wrap_type_wrapper, False, False, 4)
         box_wrap.pack_start(wrap_resistance_label_wrapper, False, False, 4)
         box_wrap.pack_start(wrap_resistance_wrapper, False, False, 4)
-        
+
         box_box = Gtk.VBox()
         box_box.pack_start(box_label_box, False, False, 4)
         box_box.pack_start(box_type_wrapper, False, False, 4)
-        
+
         box_dclick = Gtk.VBox()
         box_dclick.pack_start(double_click_label_box, False, False, 4)
         box_dclick.pack_start(double_click_box, False, False, 4)
@@ -1629,7 +1774,7 @@ class ControlCenter(Gtk.Window):
         page_point = Gtk.VBox()
         scroll_point = Gtk.ScrolledWindow()
         scroll_point.add(page_point)
-        
+
         keyopt_label = Gtk.Label()
         keyopt_label.set_markup("<b>Keyboard options</b>")
         keyopt_void = Gtk.Label(" ")
@@ -1651,7 +1796,7 @@ class ControlCenter(Gtk.Window):
         delay_label_box = Gtk.HBox()
         delay_label_box.pack_start(delay_label, False, False, 20)
         delay_label_box.pack_start(delay, True, True, 0)
-        
+
         interval_label = Gtk.Label("Interval:")
         global interval
         interval = Gtk.HScale()
@@ -1661,17 +1806,16 @@ class ControlCenter(Gtk.Window):
         try:
             interval.set_value(get_interval())
         except:
-            interval.set_value(20)    
+            interval.set_value(20)
         interval.connect("value-changed", keys_apply)
         interval_label_box = Gtk.HBox()
         interval_label_box.pack_start(interval_label, False, False, 20)
         interval_label_box.pack_start(interval, True, True, 0)
-        
+
         kbimage = Gtk.Image()
         kbimage.set_from_file("/usr/lib/peppermint/peppermint-control-center/images/keyboard.png")
-        
+
         layout_button = Gtk.Button("Select Keyboard Layout")
-        #layout_button.connect("clicked", lxkeymap)
         layout_button.connect("clicked", layoutsetter)
         layout_button_left = Gtk.Label(" ")
         layout_button_right = Gtk.Label(" ")
@@ -1701,7 +1845,7 @@ class ControlCenter(Gtk.Window):
         acceleration_label_box = Gtk.HBox()
         acceleration_label_box.pack_start(acceleration_label, False, False, 20)
         acceleration_label_box.pack_start(acceleration, True, True, 0)
-            
+
         threshold_label = Gtk.Label("Threshold")
         global threshold
         threshold = Gtk.HScale()
@@ -1716,10 +1860,10 @@ class ControlCenter(Gtk.Window):
         threshold_label_box = Gtk.HBox()
         threshold_label_box.pack_start(threshold_label, False, False, 20)
         threshold_label_box.pack_start(threshold, True, True, 0)
-        
+
         pntimage = Gtk.Image()
         pntimage.set_from_file("/usr/lib/peppermint/peppermint-control-center/images/mouse.png")
-                    
+
         global lefthanded
         lefthanded = Gtk.CheckButton("Left handed button layout")
         lefthanded.set_active(get_lefthanded())
@@ -1730,7 +1874,7 @@ class ControlCenter(Gtk.Window):
         lefthanded_box.pack_start(lefthanded_left, True, True, 0)
         lefthanded_box.pack_start(lefthanded, False, False, 0)
         lefthanded_box.pack_start(lefthanded_right, True, True, 0)
-        
+
         touch_label = Gtk.Label()
         touch_label.set_markup("<b>Touchpad options</b>")
         touch_void = Gtk.Label(" ")
@@ -1742,68 +1886,68 @@ class ControlCenter(Gtk.Window):
         touchenable = Gtk.CheckButton("Touchpad Enabled")
         touchenable.set_active(get_touchenable())
         touchenable.connect("toggled", pntr_apply)
-        
+
         global taptoclick
         taptoclick = Gtk.CheckButton("Tap-to-Click Enabled")
         taptoclick.set_active(get_taptoclick())
         taptoclick.connect("toggled", pntr_apply)
-        
+
         global vertedge
         vertedge = Gtk.CheckButton("Vertical Edge Scrolling")
         vertedge.set_active(get_vertedge())
         vertedge.connect("toggled", pntr_apply)
-        
+
         global horizedge
         horizedge = Gtk.CheckButton("Horizontal Edge Scrolling")
         horizedge.set_active(get_horizedge())
         horizedge.connect("toggled", pntr_apply)
-        
+
         global vtwofinger
         vtwofinger = Gtk.CheckButton("Two Finger Vertical Scrolling")
         vtwofinger.set_active(get_vtwofinger())
         vtwofinger.connect("toggled", pntr_apply)
-        
+
         global htwofinger
         htwofinger = Gtk.CheckButton("Two Finger Horizontal Scrolling")
         htwofinger.set_active(get_htwofinger())
         htwofinger.connect("toggled", pntr_apply)
-        
+
         kbimage_box = Gtk.VBox()
         kbimage_box.pack_start(kbimage, True, True, 20)
-        
+
         kboptions_box = Gtk.VBox()
         kboptions_box.pack_start(keyopt_label_box, False, False, 4)
         kboptions_box.pack_start(delay_label_box, False, False, 4)
         kboptions_box.pack_start(interval_label_box, False, False, 4)
         kboptions_box.pack_start(layout_button_box, False, False, 8)
-        
+
         kb_box = Gtk.HBox()
         kb_box.pack_start(kbimage_box, False, False, 40)
         kb_box.pack_start(kboptions_box, True, True, 20)
-        
+
         pntimage_box = Gtk.VBox()
         pntimage_box.pack_start(pntimage, True, True, 20)
-        
+
         pntoptions_box = Gtk.VBox()
         pntoptions_box.pack_start(pntopt_label_box, False, False, 4)
         pntoptions_box.pack_start(acceleration_label_box, False, False, 4)
         pntoptions_box.pack_start(threshold_label_box, False, False, 4)
         pntoptions_box.pack_start(lefthanded_box, False, False, 4)
-        
+
         pnt_box = Gtk.HBox()
         pnt_box.pack_start(pntoptions_box, True, True, 20)
         pnt_box.pack_start(pntimage_box, False, False, 40)
-        
+
         touchleft_box = Gtk.VBox()
         touchleft_box.pack_start(touchenable, False, False, 0)
         touchleft_box.pack_start(vertedge, False, False, 0)
         touchleft_box.pack_start(horizedge, False, False, 0)
-        
+
         touchright_box = Gtk.VBox()
         touchright_box.pack_start(taptoclick, False, False, 0)
         touchright_box.pack_start(vtwofinger, False, False, 0)
         touchright_box.pack_start(htwofinger, False, False, 0)
-        
+
         touch_box = Gtk.HBox()
         touch_box.pack_start(touchleft_box, False, False, 40)
         touch_box.pack_start(touchright_box, False, False, 0)
@@ -1812,7 +1956,7 @@ class ControlCenter(Gtk.Window):
         page_point.pack_start(pnt_box, False, False, 0)
         page_point.pack_start(touch_label_box, False, False, 10)
         page_point.pack_start(touch_box, False, False, 10)
-        
+
         ##################################
         ### 'Keyboard Shortcuts' page. ###
         ##################################
@@ -1820,7 +1964,7 @@ class ControlCenter(Gtk.Window):
         page_short = Gtk.VBox()
         scroll_short = Gtk.ScrolledWindow()
         scroll_short.add(page_short)
-        
+
         xfce_label = Gtk.Label()
         xfce_label.set_markup("<b>Window Manager Shortcuts</b>")
         xfce_void = Gtk.Label(" ")
@@ -1852,26 +1996,26 @@ class ControlCenter(Gtk.Window):
             elif "raise_window_key" in a[0]:
                 continue
             xfcestore.append([a[0], a[1]])
-            
+
         xfceview = Gtk.TreeView(model=xfcestore)
-        
+
         xfce_renderer_action = Gtk.CellRendererText()
         xfce_column_action = Gtk.TreeViewColumn("Action", xfce_renderer_action, text=0)
         xfceview.append_column(xfce_column_action)
-        
+
         xfce_renderer_shortcut = Gtk.CellRendererText()
         xfce_column_shortcut = Gtk.TreeViewColumn("Shortcut", xfce_renderer_shortcut, text=1)
         xfceview.append_column(xfce_column_shortcut)
-        
+
         xfceview.connect("row-activated", edit_xfce_shortcut)
-        
+
         global bindstore
         bindstore = Gtk.ListStore(str, str)
         get_bind = get_xbindkeys()
         for line in get_bind:
             a = line.split("\n")
             bindstore.append([a[0], a[1]])
-            
+
         bind_label = Gtk.Label()
         bind_label.set_markup("<b>System Shortcuts</b>")
         bind_void = Gtk.Label(" ")
@@ -1884,34 +2028,34 @@ class ControlCenter(Gtk.Window):
         bind_label_box.pack_start(bind_void, True, True, 0)
         bind_label_box.pack_start(bind_new, False, False, 0)
         bind_label_box.pack_start(bind_restore, False, False, 10)
-        
+
         global bindview
         bindview = Gtk.TreeView(model=bindstore)
-        
+
         bind_renderer_action = Gtk.CellRendererText()
         bind_column_action = Gtk.TreeViewColumn("Action", bind_renderer_action, text=0)
         bindview.append_column(bind_column_action)
-        
+
         bind_renderer_shortcut = Gtk.CellRendererText()
         bind_column_shortcut = Gtk.TreeViewColumn("Shortcut", bind_renderer_shortcut, text=1)
         bindview.append_column(bind_column_shortcut)
-        
+
         bindview.connect("row-activated", edit_bind_shortcut)
-        
+
         page_short.pack_start(bind_label_box, False, False, 10)
         page_short.pack_start(bindview, True, True, 0)
         page_short.pack_start(xfce_label_box, False, False, 10)
         page_short.pack_start(xfceview, True, True, 0)
-        
+
         ###############################
         ### 'Desktop Effects' page. ###
         ###############################
-        
+
         page_effect_lab = Gtk.Label("Desktop Effects")
         page_effect = Gtk.VBox()
         scroll_effect = Gtk.ScrolledWindow()
         scroll_effect.add(page_effect)
-        
+
         use_compositing = Gtk.CheckButton()
         use_compositing.set_active(get_use_compositing())
         use_compositing.connect("toggled", set_use_compositing)
@@ -1922,23 +2066,23 @@ class ControlCenter(Gtk.Window):
         use_compositing_box.pack_start(use_compositing, False, False, 10)
         use_compositing_box.pack_start(use_compositing_label, False, False, 0)
         use_compositing_box.pack_start(use_compositing_void, True, True, 0)
-        
+
         unredirect_overlays = Gtk.CheckButton("Display fullscreen overlay windows directly")
         unredirect_overlays.set_active(get_unredirect_overlays())
         unredirect_overlays.connect("toggled", set_unredirect_overlays)
-        
+
         sync_to_vblank = Gtk.CheckButton("Synchronize drawing to the vertical blank")
         sync_to_vblank.set_active(get_sync_to_vblank())
         sync_to_vblank.connect("toggled", set_sync_to_vblank)
-        
+
         show_popup_shadow = Gtk.CheckButton("Show shadows under popup windows")
         show_popup_shadow.set_active(get_show_popup_shadow())
         show_popup_shadow.connect("toggled", set_show_popup_shadow)
-        
+
         show_dock_shadow = Gtk.CheckButton("Show shadows under dock windows")
         show_dock_shadow.set_active(get_show_dock_shadow())
         show_dock_shadow.connect("toggled", set_show_dock_shadow)
-        
+
         show_frame_shadow = Gtk.CheckButton("Show shadows under regular windows")
         show_frame_shadow.set_active(get_show_frame_shadow())
         show_frame_shadow.connect("toggled", set_show_frame_shadow)
@@ -1965,7 +2109,7 @@ class ControlCenter(Gtk.Window):
         frame_opacity_box.pack_start(frame_opacity_left, False, False, 15)
         frame_opacity_box.pack_start(frame_opacity, True, True, 0)
         frame_opacity_box.pack_start(frame_opacity_right, False, False, 15)
-        
+
         inactive_opacity_label = Gtk.Label("Opacity of inactive windows:")
         inactive_opacity_void = Gtk.Label(" ")
         inactive_opacity_label_box = Gtk.HBox()
@@ -1988,7 +2132,7 @@ class ControlCenter(Gtk.Window):
         inactive_opacity_box.pack_start(inactive_opacity_left, False, False, 15)
         inactive_opacity_box.pack_start(inactive_opacity, True, True, 0)
         inactive_opacity_box.pack_start(inactive_opacity_right, False, False, 15)
-        
+
         move_opacity_label = Gtk.Label("Opacity of windows during move:")
         move_opacity_void = Gtk.Label(" ")
         move_opacity_label_box = Gtk.HBox()
@@ -2011,7 +2155,7 @@ class ControlCenter(Gtk.Window):
         move_opacity_box.pack_start(move_opacity_left, False, False, 15)
         move_opacity_box.pack_start(move_opacity, True, True, 0)
         move_opacity_box.pack_start(move_opacity_right, False, False, 15)
-        
+
         resize_opacity_label = Gtk.Label("Opacity of windows during resize:")
         resize_opacity_void = Gtk.Label(" ")
         resize_opacity_label_box = Gtk.HBox()
@@ -2034,7 +2178,7 @@ class ControlCenter(Gtk.Window):
         resize_opacity_box.pack_start(resize_opacity_left, False, False, 15)
         resize_opacity_box.pack_start(resize_opacity, True, True, 0)
         resize_opacity_box.pack_start(resize_opacity_right, False, False, 15)
-        
+
         popup_opacity_label = Gtk.Label("Opacity of popup windows:")
         popup_opacity_void = Gtk.Label(" ")
         popup_opacity_label_box = Gtk.HBox()
@@ -2057,12 +2201,12 @@ class ControlCenter(Gtk.Window):
         popup_opacity_box.pack_start(popup_opacity_left, False, False, 15)
         popup_opacity_box.pack_start(popup_opacity, True, True, 0)
         popup_opacity_box.pack_start(popup_opacity_right, False, False, 15)
-        
+
         deimage = Gtk.Image()
         deimage.set_from_file("/usr/lib/peppermint/peppermint-control-center/images/de.png")
         deimage_box = Gtk.HBox()
         deimage_box.pack_start(deimage, True, True, 0)
-        
+
         effects_left = Gtk.VBox()
         effects_left.pack_start(unredirect_overlays, False, False, 0)
         effects_left.pack_start(sync_to_vblank, False, False, 0)
@@ -2091,42 +2235,42 @@ class ControlCenter(Gtk.Window):
         effects_box.pack_start(popup_opacity_box, False, False, 0)
         effects_wrapper = Gtk.HBox()
         effects_wrapper.pack_start(effects_box, True, True, 30)
-        
+
         page_effect.pack_start(use_compositing_box, False, False, 10)
         page_effect.pack_start(effects_wrapper, True, True, 0)
 
         ########################
         ### 'Advanced' page. ###
         ########################
-        
+
         page_adv_lab = Gtk.Label("Advanced")
         page_adv = Gtk.VBox()
         scroll_adv = Gtk.ScrolledWindow()
         scroll_adv.add(page_adv)
-        
+
         cycling_label = Gtk.Label()
         cycling_label.set_markup("<b>Window cycling</b>")
         cycling_void = Gtk.Label(" ")
         cycling_label_box = Gtk.HBox()
         cycling_label_box.pack_start(cycling_label, False, False, 10)
         cycling_label_box.pack_start(cycling_void, True, True, 0)
-        
+
         cycle_minimum = Gtk.CheckButton("Skip windows specified to skip the pager/taskbar")
         cycle_minimum.set_active(get_cycle_minimum())
         cycle_minimum.connect("toggled", set_cycle_minimum)
-        
+
         cycle_hidden = Gtk.CheckButton("Include hidden/iconified windows")
         cycle_hidden.set_active(get_cycle_hidden())
         cycle_hidden.connect("toggled", set_cycle_minimum)
-        
+
         cycle_workspaces = Gtk.CheckButton("Cycle through windows on all workspaces")
         cycle_workspaces.set_active(get_cycle_workspaces())
         cycle_workspaces.connect("toggled", set_cycle_workspaces)
-        
+
         cycle_draw_frame = Gtk.CheckButton("Draw frame around selected windows while cycling")
         cycle_draw_frame.set_active(get_cycle_draw_frame())
         cycle_draw_frame.connect("toggled", set_cycle_draw_frame)
-        
+
         cycling_section = Gtk.VBox()
         cycling_section.pack_start(cycle_minimum, False, False, 0)
         cycling_section.pack_start(cycle_hidden, False, False, 0)
@@ -2134,33 +2278,33 @@ class ControlCenter(Gtk.Window):
         cycling_section.pack_start(cycle_draw_frame, False, False, 0)
         cycling_section_box = Gtk.HBox()
         cycling_section_box.pack_start(cycling_section, False, False, 30)
-        
-        cycling_box = Gtk.VBox()        
+
+        cycling_box = Gtk.VBox()
         cycling_box.pack_start(cycling_label_box, False, False, 4)
         cycling_box.pack_start(cycling_section_box, False, False, 4)
-        
+
         focus_label = Gtk.Label()
         focus_label.set_markup("<b>Window focus</b>")
         focus_void = Gtk.Label(" ")
         focus_label_box = Gtk.HBox()
         focus_label_box.pack_start(focus_label, False, False, 10)
         focus_label_box.pack_start(focus_void, True, True, 0)
-        
+
         prevent_focus_stealing = Gtk.CheckButton("Activate focus stealing prevention")
         prevent_focus_stealing.set_active(get_prevent_focus_stealing())
         prevent_focus_stealing.connect("toggled", set_prevent_focus_stealing)
-        
+
         focus_hint = Gtk.CheckButton("Honor standard ICCCM focus hint")
         focus_hint.set_active(get_focus_hint())
         focus_hint.connect("toggled", set_focus_hint)
-        
+
         window_raise_label = Gtk.Label()
         window_raise_label.set_markup("<i>When a window raises itself:</i>")
         window_raise_void = Gtk.Label(" ")
         window_raise_label_box = Gtk.HBox()
         window_raise_label_box.pack_start(window_raise_label, False, False, 30)
         window_raise_label_box.pack_start(window_raise_void, True, True, 0)
-        
+
         activate_action_box = Gtk.VBox()
         activate_action_bring = Gtk.RadioButton.new_with_label_from_widget(None, "Bring window on current workspace")
         activate_action_bring.connect("toggled", set_activate_action, "bring")
@@ -2181,7 +2325,7 @@ class ControlCenter(Gtk.Window):
         activate_action_box.pack_start(activate_action_none, False, False, 0)
         activate_action_wrapper = Gtk.HBox()
         activate_action_wrapper.pack_start(activate_action_box, False, False, 50)
-        
+
         focus_section = Gtk.VBox()
         focus_section.pack_start(prevent_focus_stealing, False, False, 0)
         focus_section.pack_start(focus_hint, False, False, 0)
@@ -2193,27 +2337,27 @@ class ControlCenter(Gtk.Window):
         focus_box = Gtk.VBox()
         focus_box.pack_start(focus_label_box, False, False, 4)
         focus_box.pack_start(focus_section_box, False, False, 4)
-        
+
         accessibility_label = Gtk.Label()
         accessibility_label.set_markup("<b>Accessibility</b>")
         accessibility_void = Gtk.Label(" ")
         accessibility_label_box = Gtk.HBox()
         accessibility_label_box.pack_start(accessibility_label, False, False, 10)
         accessibility_label_box.pack_start(accessibility_void, True, True, 0)
-        
+
         raise_with_any_button = Gtk.CheckButton("Raise windows when any pointer button is pressed")
         raise_with_any_button.set_active(get_raise_with_any_button())
         raise_with_any_button.connect("toggled", set_raise_with_any_button)
-        
+
         borderless_maximize = Gtk.CheckButton("Hide frames of maximized windows")
         borderless_maximize.set_active(get_borderless_maximize())
         borderless_maximize.connect("toggled", set_borderless_maximize)
-        
+
         global restore_on_move
         restore_on_move = Gtk.CheckButton("Restore original size of maximized windows when moving")
         restore_on_move.set_active(get_restore_on_move())
         restore_on_move.connect("toggled", set_restore_on_move)
-        
+
         # Depends on restore_on_move
         global tile_on_move
         tile_on_move = Gtk.CheckButton("Automatically tile windows when moving toward the screen edge")
@@ -2223,17 +2367,17 @@ class ControlCenter(Gtk.Window):
             tile_on_move.set_sensitive(True)
         else:
             tile_on_move.set_sensitive(False)
-        
+
         snap_resist = Gtk.CheckButton("Use edge resistance instead of window snapping")
         snap_resist.set_active(get_snap_resist())
         snap_resist.connect("toggled", set_snap_resist)
-        
+
         # Also disable repeat_urgent_blink
         global urgent_blink
         urgent_blink = Gtk.CheckButton("Notify of urgency with blinking window decorations")
         urgent_blink.set_active(get_urgent_blink())
         urgent_blink.connect("toggled", set_urgent_blink)
-        
+
         # Depends on urgent_blink
         global repeat_urgent_blink
         repeat_urgent_blink = Gtk.CheckButton("Keep urgent windows blinking repeatedly")
@@ -2245,7 +2389,7 @@ class ControlCenter(Gtk.Window):
             repeat_urgent_blink.set_active(False)
             repeat_urgent_blink.set_sensitive(False)
             set_repeat_urgent_blink_off()
-        
+
         mousewheel_rollup = Gtk.CheckButton("Scroll on title bar to roll up the window")
         mousewheel_rollup.set_active(get_mousewheel_rollup())
         mousewheel_rollup.connect("toggled", set_mousewheel_rollup)
@@ -2261,43 +2405,43 @@ class ControlCenter(Gtk.Window):
         accessibility_section.pack_start(mousewheel_rollup, False, False, 0)
         accessibility_section_box = Gtk.HBox()
         accessibility_section_box.pack_start(accessibility_section, False, False, 30)
-        
+
         accessibility_box = Gtk.VBox()
         accessibility_box.pack_start(accessibility_label_box, False, False, 4)
         accessibility_box.pack_start(accessibility_section_box, False, False, 4)
-        
+
         workspaces_label = Gtk.Label()
         workspaces_label.set_markup("<b>Workspaces</b>")
         workspaces_void = Gtk.Label(" ")
         workspaces_label_box = Gtk.HBox()
         workspaces_label_box.pack_start(workspaces_label, False, False, 10)
         workspaces_label_box.pack_start(workspaces_void, True, True, 0)
-        
+
         scroll_workspaces = Gtk.CheckButton("Scroll on desktop to change workspaces")
         scroll_workspaces.set_active(get_scroll_workspaces())
         scroll_workspaces.connect("toggled", set_scroll_workspaces)
-        
+
         wrap_layout = Gtk.CheckButton("Wrap workspaces")
         wrap_layout.set_active(get_wrap_layout())
         wrap_layout.connect("toggled", set_wrap_layout)
-        
+
         workspaces_section = Gtk.VBox()
         workspaces_section.pack_start(scroll_workspaces, False, False, 0)
         workspaces_section.pack_start(wrap_layout, False, False, 0)
         workspaces_section_box = Gtk.HBox()
         workspaces_section_box.pack_start(workspaces_section, False, False, 30)
-        
+
         workspaces_box = Gtk.VBox()
         workspaces_box.pack_start(workspaces_label_box, False, False, 4)
         workspaces_box.pack_start(workspaces_section_box, False, False, 4)
-        
+
         placement_label = Gtk.Label()
         placement_label.set_markup("<b>Window placement</b>")
         placement_void = Gtk.Label(" ")
         placement_label_box = Gtk.HBox()
         placement_label_box.pack_start(placement_label, False, False, 10)
         placement_label_box.pack_start(placement_void, True, True, 0)
-        
+
         placement_ratio_label = Gtk.Label("Minimum window size to trigger smart placement:")
         placement_ratio_void = Gtk.Label(" ")
         placement_ratio_label_box = Gtk.HBox()
@@ -2320,13 +2464,13 @@ class ControlCenter(Gtk.Window):
         placement_ratio_box.pack_start(placement_ratio_small, False, False, 15)
         placement_ratio_box.pack_start(placement_ratio, True, True, 0)
         placement_ratio_box.pack_start(placement_ratio_large, False, False, 15)
-        
+
         placement_mode_label = Gtk.Label("By default, place windows:")
         placement_mode_void = Gtk.Label(" ")
         placement_mode_label_box = Gtk.HBox()
         placement_mode_label_box.pack_start(placement_mode_label, False, False, 0)
         placement_mode_label_box.pack_start(placement_mode_void, False, False, 0)
-        
+
         placement_mode_center = Gtk.RadioButton.new_with_label_from_widget(None, "At the center of the screen")
         placement_mode_center.connect("toggled", set_placement_mode, "center")
         if get_placement_mode() == "center":
@@ -2341,7 +2485,7 @@ class ControlCenter(Gtk.Window):
         placement_mode_box.pack_start(placement_mode_mouse, False, False, 0)
         placement_mode_wrapper = Gtk.HBox()
         placement_mode_wrapper.pack_start(placement_mode_box, True, True, 10)
-        
+
         placement_section = Gtk.VBox()
         placement_section.pack_start(placement_ratio_label_box, False, False, 4)
         placement_section.pack_start(placement_ratio_box, False, False, 4)
@@ -2353,7 +2497,7 @@ class ControlCenter(Gtk.Window):
         placement_box = Gtk.VBox()
         placement_box.pack_start(placement_label_box, False, False, 4)
         placement_box.pack_start(placement_section_box, False, False, 4)
-        
+
         page_adv.pack_start(cycling_box, False, False, 10)
         page_adv.pack_start(focus_box, False, False, 0)
         page_adv.pack_start(accessibility_box, False, False, 10)
@@ -2369,7 +2513,7 @@ class ControlCenter(Gtk.Window):
         mainbook.append_page(scroll_short, page_short_lab)
         mainbook.append_page(scroll_effect, page_effect_lab)
         mainbook.append_page(scroll_adv, page_adv_lab)
-        
+
         mainb = Gtk.VBox(10, 10)
         mainb.pack_start(mainbook, True, True, 10)
         mainb1 = Gtk.HBox(10, 10)
@@ -2377,7 +2521,9 @@ class ControlCenter(Gtk.Window):
 
         self.add(mainb1)
 
-window = ControlCenter()
-window.connect("delete-event", Gtk.main_quit)
-window.show_all()
-Gtk.main()
+
+if __name__ == '__main__':
+    window = ControlCenter()
+    window.connect("delete-event", Gtk.main_quit)
+    window.show_all()
+    Gtk.main()
