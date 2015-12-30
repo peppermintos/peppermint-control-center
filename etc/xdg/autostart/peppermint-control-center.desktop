@@ -1,0 +1,9 @@
+[Desktop Entry]
+Version=1.0
+Name=Load Input Settings
+Comment=Load Input Settings
+Exec=ppmcc-startup
+Icon=peppermint-control-center
+Type=Application
+Encoding=UTF-8
+Categories=Application;Settings

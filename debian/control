@@ -1,0 +1,17 @@
+Source: peppermint-control-center
+Section: x11
+Priority: required
+Maintainer: Kendall Weaver <kendall@peppermintos.com>
+Build-Depends: debhelper (>= 5.0.0)
+Standards-Version: 3.8.4
+
+Package: peppermint-control-center
+Depends: python3, python3-gi, xfwm4, xbindkeys
+Conflicts: xbindkeys-config
+Architecture: all 
+Description:  Window manager and input settings for Peppermint OS.
+ Application designed to replace several default xfwm4 settings
+ applications along with the severely dated mintinput application.
+ Additionally this will eventually serve as a complete keyboard
+ shortcut manager.
+ 

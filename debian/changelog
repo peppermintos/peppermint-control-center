@@ -1,0 +1,40 @@
+peppermint-control-center (0.2.1) trusty; urgency=low
+
+  * Added "Revert" button and test area to keyboard layout window.
+
+ -- Kendall Weaver <kendall@peppermintos.com>  10 Jun 2014 12:35:00 -0400
+
+peppermint-control-center (0.2.0) trusty; urgency=low
+
+  * Added component to handle keyboard layouts internally.
+
+ -- Kendall Weaver <kendall@peppermintos.com>  09 Jun 2014 18:03:00 -0400
+
+peppermint-control-center (0.1.1) trusty; urgency=low
+
+  * Changed to 'trusty' component to build in Launchpad.
+
+ -- Kendall Weaver <kendall@peppermintos.com>  23 May 2014 11:04:00 -0400
+
+peppermint-control-center (0.1.0) unstable; urgency=low
+
+  * Added keyboard shortcut support (still super buggy).
+  * Eliminated 'peppermint-default-settings' as a dependency.
+
+ -- Kendall Weaver <kendall@peppermintos.com>  21 May 2014 17:03:00 -0400
+
+peppermint-control-center (0.0.2) unstable; urgency=low
+
+  * Fixed icon path.
+  * Now tests for ~/.themes/ and skips if it doesn't exist.
+  * Added 'peppermint-default-settings' as a dependency.
+  * Package now conflicts with 'xbindkeys-config'.
+
+ -- Kendall Weaver <kendall@peppermintos.com>  19 May 2014 11:47:00 -0400
+
+peppermint-control-center (0.0.1) unstable; urgency=low
+
+  * Alpha build for internal testing.
+
+ -- Kendall Weaver <kendall@peppermintos.com>  16 May 2014 16:46:00 -0400
+

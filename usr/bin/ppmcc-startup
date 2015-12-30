@@ -1,0 +1,3 @@
+#!/bin/sh
+sleep 1 && $HOME/.config/peppermint-control-center/pointer && $HOME/.config/peppermint-control-center/keyboard && $HOME/.config/peppermint-control-center/keyboard_layout &
+exit 0

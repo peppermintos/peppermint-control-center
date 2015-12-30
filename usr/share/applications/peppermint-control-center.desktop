@@ -1,0 +1,10 @@
+
+[Desktop Entry]
+Version=1.0
+Name=Peppermint Control Center
+Comment=Window Manager and Input Settings
+Exec=peppermint-control-center
+Icon=peppermint-control-center
+Type=Application
+Encoding=UTF-8
+Categories=Application;Settings
