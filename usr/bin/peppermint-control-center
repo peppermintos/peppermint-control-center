@@ -113,17 +113,16 @@ def value_from_xml(a):
 
 
 def get_generic(a):
-    if value_from_xml('name="' + a + '"') == "true":
+    if value_from_xml('name="{0}"'.format(a)) == "true":
         return True
-    else:
-        return False
+    return False
 
 
 def set_generic(widget, prop):
     if widget.get_active():
-        os.system("xfconf-query -c xfwm4 -p /general/" + prop + " -s true")
+        os.system("xfconf-query -c xfwm4 -p /general/{0} -s true".format(prop))
     else:
-        os.system("xfconf-query -c xfwm4 -p /general/" + prop + " -s false")
+        os.system("xfconf-query -c xfwm4 -p /general/{0} -s false".format(prop))
 
 ##########################################
 ### Methods for 'Window Manager' page. ###
@@ -140,13 +139,13 @@ def theme_list():
 
     syslist = os.listdir("/usr/share/themes")
     for item in syslist:
-        if os.path.exists("/usr/share/themes/" + item + "/xfwm4/themerc"):
+        if os.path.exists("/usr/share/themes/{0}/xfwm4/themerc".format(item)):
             themelist.append(item)
 
     if os.path.exists(os.path.expanduser("~/.themes/")):
         usrlist = os.listdir(os.path.expanduser("~/.themes"))
         for item in usrlist:
-            if os.path.exists(os.path.expanduser("~/.themes/" + item + "/xfwm4/themerc")):
+            if os.path.exists(os.path.expanduser("~/.themes/{0}/xfwm4/themerc".format(item))):
                 themelist.append(item)
 
     return sorted(themelist)
@@ -157,7 +156,7 @@ def theme_index():
 
 
 def set_theme(widget):
-    os.system("xfconf-query -c xfwm4 -p /general/theme -s " + theme_box.get_active_text())
+    os.system("xfconf-query -c xfwm4 -p /general/theme -s {0}".format(theme_box.get_active_text()))
 
 
 # Title font methods.
@@ -170,8 +169,9 @@ def get_title_font():
 
 
 def set_title_font(widget):
-    os.system('xfconf-query -c xfwm4 -p /general/title_font -s "' + widget.get_font_name() + '"')
-    widget.set_title(widget.get_font_name())
+    font_name = widget.get_font_name()
+    os.system('xfconf-query -c xfwm4 -p /general/title_font -s "{0}"'.format(font_name))
+    widget.set_title(font_name)
 
 
 # Title alignment methods.
@@ -180,31 +180,27 @@ def get_title_alignment():
 
 
 def alignment_index():
+    indices = {
+        'left': 0,
+        'center': 1,
+        'right': 2
+    }
     a = get_title_alignment()
-    if a == "left":
-        return 0
-    elif a == "center":
-        return 1
-    elif a == "right":
-        return 2
-    else:
+    try:
+        return indices[a]
+    except KeyError:
         print("ERROR: Alignment index out of range.")
         sys.exit(1)
 
 
 def set_title_alignment(widget):
+    indices = ['left', 'center', 'right']
     a = alignment_box.get_active_text()
-    if a == "Left":
-        b = "left"
-    elif a == "Center":
-        b = "center"
-    elif a == "Right":
-        b = "right"
+    if a.lower() in indices:
+        os.system("xfconf-query -c xfwm4 -p /general/title_alignment -s {0}".format(a.lower()))
     else:
         print("ERROR: Alignment index out of range.")
         sys.exit(1)
-
-    os.system("xfconf-query -c xfwm4 -p /general/title_alignment -s " + b)
 
 
 # Workspace count methods:
@@ -214,7 +210,7 @@ def get_workspace_count():
 
 
 def set_workspace_count(button):
-    os.system("xfconf-query -c xfwm4 -p /general/workspace_count -s " + str(int(button.get_value())))
+    os.system("xfconf-query -c xfwm4 -p /general/workspace_count -s {0}".format(str(int(button.get_value()))))
 
 
 # Click to focus methods.
@@ -224,7 +220,7 @@ def get_click_to_focus():
 
 def set_click_to_focus(button, value):
     if button.get_active():
-        os.system("xfconf-query -c xfwm4 -p /general/click_to_focus -s " + value)
+        os.system("xfconf-query -c xfwm4 -p /general/click_to_focus -s {0}".format(value))
     if value == "false":
         focus_delay_box.set_sensitive(True)
     if value == "true":
@@ -237,7 +233,7 @@ def get_focus_delay():
 
 
 def set_focus_delay(widget):
-    os.system("xfconf-query -c xfwm4 -p /general/focus_delay -s " + str(int(focus_delay.get_value())))
+    os.system("xfconf-query -c xfwm4 -p /general/focus_delay -s {0}".format(str(int(focus_delay.get_value()))))
 
 
 # New window focus methods.
@@ -264,7 +260,7 @@ def get_raise_delay():
 
 
 def set_raise_delay(widget):
-    os.system("xfconf-query -c xfwm4 -p /general/raise_delay -s " + str(int(raise_delay.get_value())))
+    os.system("xfconf-query -c xfwm4 -p /general/raise_delay -s {0}".format(str(int(raise_delay.get_value()))))
 
 
 # Raise on click methods.
@@ -298,7 +294,7 @@ def get_snap_width():
 
 
 def set_snap_width(widget):
-    os.system("xfconf-query -c xfwm4 -p /general/snap_width -s " + str(int(snap_width.get_value())))
+    os.system("xfconf-query -c xfwm4 -p /general/snap_width -s {0}".format(str(int(snap_width.get_value()))))
 
 
 # Workspace wrapping methods.
@@ -323,7 +319,7 @@ def get_wrap_resistance():
 
 
 def set_wrap_resistance(widget):
-    os.system("xfconf-query -c xfwm4 -p /general/wrap_resistance -s " + str(int(wrap_resistance.get_value())))
+    os.system("xfconf-query -c xfwm4 -p /general/wrap_resistance -s {0}".format(str(int(wrap_resistance.get_value()))))
 
 
 # Methods for hiding window content during transformations.
@@ -363,22 +359,21 @@ def set_double_click_action(button):
     else:
         print("ERROR: Double click action index out of range.")
         sys.exit(1)
-    os.system("xfconf-query -c xfwm4 -p /general/double_click_action -s " + b)
+    os.system("xfconf-query -c xfwm4 -p /general/double_click_action -s {0}".format(b))
 
 
 def double_click_action_index():
+    indices = {
+        'shade': 0,
+        'hide': 1,
+        'maximize': 2,
+        'fill': 3,
+        'none': 4
+    }
     a = get_double_click_action()
-    if a == "shade":
-        return 0
-    elif a == "hide":
-        return 1
-    elif a == "maximize":
-        return 2
-    elif a == "fill":
-        return 3
-    elif a == "none":
-        return 4
-    else:
+    try:
+        return indices[a]
+    except KeyError:
         print("ERROR: Double click action index out of range.")
         sys.exit(1)
 
@@ -396,52 +391,31 @@ def get_threshold():
 
 
 def get_lefthanded():
-    if (pntr_data[3][22] == "3"):
-        return True
-    else:
-        return False
+    return pntr_data[3][22] == "3"
 
 
 def get_touchenable():
-    if (pntr_data[4][22] == "0"):
-        return True
-    else:
-        return False
+    return pntr_data[4][22] == "0"
 
 
 def get_taptoclick():
-    if (pntr_data[7][21] == "1"):
-        return True
-    else:
-        return False
+    return pntr_data[7][21] == "1"
 
 
 def get_vertedge():
-    if (pntr_data[5][25] == "1"):
-        return True
-    else:
-        return False
+    return pntr_data[5][25] == "1"
 
 
 def get_horizedge():
-    if (pntr_data[6][26] == "1"):
-        return True
-    else:
-        return False
+    return pntr_data[6][26] == "1"
 
 
 def get_vtwofinger():
-    if (pntr_data[8][30] == "1"):
-        return True
-    else:
-        return False
+    return pntr_data[8][30] == "1"
 
 
 def get_htwofinger():
-    if (pntr_data[9][31] == "1"):
-        return True
-    else:
-        return False
+    return pntr_data[9][31] == "1"
 
 
 # 'Apply Pointer Options' button.
@@ -489,14 +463,14 @@ def pntr_apply(widget):
             conf.truncate()
             conf.write("#!/bin/bash\n")
             conf.write("#Autogenerated script - Do not edit\n")
-            conf.write("xset m " + acceleration_value + " " + threshold_value + "\n")
-            conf.write("xmodmap -e \"pointer = " + lefthanded_value + "\"\n")
-            conf.write("synclient TouchPadOff=" + touchenable_value + "\n")
-            conf.write("synclient VertEdgeScroll=" + vertedge_value + "\n")
-            conf.write("synclient HorizEdgeScroll=" + horizedge_value + "\n")
-            conf.write("synclient TapButton1=" + taptoclick_value + "\n")
-            conf.write("synclient VertTwoFingerScroll=" + vtwofinger_value + "\n")
-            conf.write("synclient HorizTwoFingerScroll=" + htwofinger_value + "\n")
+            conf.write("xset m {0} {1}\n".format(acceleration_value, threshold_value))
+            conf.write('xmodmap -e "pointer = {0}\n"'.format(lefthanded_value))
+            conf.write("synclient TouchPadOff={0}\n".format(touchenable_value))
+            conf.write("synclient VertEdgeScroll={0}\n".format(vertedge_value))
+            conf.write("synclient HorizEdgeScroll={0}\n".format(horizedge_value))
+            conf.write("synclient TapButton1={0}\n".format(taptoclick_value))
+            conf.write("synclient VertTwoFingerScroll={0}\n".format(vtwofinger_value))
+            conf.write("synclient HorizTwoFingerScroll={0}\n".format(htwofinger_value))
     except:
         print("ERROR: Could not save new configuration.")
         sys.exit(1)
@@ -534,7 +508,7 @@ def keys_apply(widget):
             conf.truncate()
             conf.write("#!/bin/bash\n")
             conf.write("#Autogenerated script - Do not edit\n")
-            conf.write("xset r rate " + delay_value + " " + interval_value + "\n")
+            conf.write("xset r rate {0} {1}\n".format(delay_value, interval_value))
     except:
         print("ERROR: Could not save new configuration.")
         sys.exit(1)
@@ -569,7 +543,7 @@ def xmlformat(a):
     spl = a.split()
     name = spl[3].replace('"', ' ').split()
     keys = spl[1].replace('"', ' ').split()
-    disp = name[1] + " " + keys[1]
+    disp = "{0} {1}".format(name[1], keys[1])
     kpad = disp.replace("KP_", "")
     return encodereplace(kpad).replace("Primary", "Control")
 
@@ -598,7 +572,7 @@ def get_xfce_shortcuts():
     xfceline = []
 
     for line in xfks_data:
-        if ('type="string"' in line):
+        if 'type="string"' in line:
             try:
                 xfceline.append(xmlformat(line))
             except:
@@ -665,8 +639,9 @@ def edit_bind_shortcut(selection, path, column):
 def set_xfce_shortcut(command, shortcut):
     new0 = shortcut.replace("Control", "Primary")
     new1 = new0.replace("Space", "space")
-    os.system('xfconf-query -c xfce4-keyboard-shortcuts -p "/xfwm4/custom/' + oldcommand + '" -r')
-    os.system('xfconf-query -c xfce4-keyboard-shortcuts -p "/xfwm4/custom/' + new1 + '" -n -t string -s ' + command)
+    os.system('xfconf-query -c xfce4-keyboard-shortcuts -p "/xfwm4/custom/{0}" -r'.format(oldcommand))
+    os.system('xfconf-query -c xfce4-keyboard-shortcuts -p "/xfwm4/custom/{0}" -n -t string -s {1}'.format(
+        new1, command))
 
 
 ################################################################################################
@@ -680,17 +655,16 @@ def set_bind_shortcut(command, shortcut, store):
             continue
         bindlist.append([item[0], item[1]])
 
-    conf = open(os.path.expanduser("~/.config/peppermint-control-center/xbindkeys.conf"), 'w')
-    conf.truncate()
-    for line in bindlist:
-        new0 = line[1]
-        new1 = new0.replace("<Control>", "Control+")
-        new2 = new1.replace("<Alt>", "Alt+")
-        new3 = new2.replace("<Super>", "Mod4+")
-        new4 = new3.replace("<Shift>", "Shift+")
-        conf.write('"' + line[0] + '"' + "\n    " + new4 + "\n\n")
+    with open(os.path.expanduser("~/.config/peppermint-control-center/xbindkeys.conf"), 'w') as conf:
+        conf.truncate()
+        for line in bindlist:
+            new0 = line[1]
+            new1 = new0.replace("<Control>", "Control+")
+            new2 = new1.replace("<Alt>", "Alt+")
+            new3 = new2.replace("<Super>", "Mod4+")
+            new4 = new3.replace("<Shift>", "Shift+")
+            conf.write('"{0}"\n    {1}\n\n'.format(line[0], new4))
 
-    conf.close()
     os.system("killall xbindkeys")
     os.system("xbindkeys -f ~/.config/peppermint-control-center/xbindkeys.conf")
 
@@ -700,17 +674,16 @@ def refresh_bind_shortcuts():
     for item in bindstore:
         bindlist.append([item[0], item[1]])
 
-    conf = open(os.path.expanduser("~/.config/peppermint-control-center/xbindkeys.conf"), 'w')
-    conf.truncate()
-    for line in bindlist:
-        new0 = line[1]
-        new1 = new0.replace("<Control>", "Control+")
-        new2 = new1.replace("<Alt>", "Alt+")
-        new3 = new2.replace("<Super>", "Mod4+")
-        new4 = new3.replace("<Shift>", "Shift+")
-        conf.write('"' + line[0] + '"' + "\n    " + new4 + "\n\n")
+    with open(os.path.expanduser("~/.config/peppermint-control-center/xbindkeys.conf"), 'w') as conf:
+        conf.truncate()
+        for line in bindlist:
+            new0 = line[1]
+            new1 = new0.replace("<Control>", "Control+")
+            new2 = new1.replace("<Alt>", "Alt+")
+            new3 = new2.replace("<Super>", "Mod4+")
+            new4 = new3.replace("<Shift>", "Shift+")
+            conf.write('"{0}"\n    {1}\n\n'.format(line[0], new4))
 
-    conf.close()
     os.system("killall xbindkeys")
     os.system("xbindkeys -f ~/.config/peppermint-control-center/xbindkeys.conf")
 
@@ -797,7 +770,7 @@ def get_frame_opacity():
 
 
 def set_frame_opacity(widget):
-    os.system("xfconf-query -c xfwm4 -p /general/frame_opacity -s " + str(int(widget.get_value())))
+    os.system("xfconf-query -c xfwm4 -p /general/frame_opacity -s {0}".format(str(int(widget.get_value()))))
 
 
 def get_inactive_opacity():
@@ -805,7 +778,7 @@ def get_inactive_opacity():
 
 
 def set_inactive_opacity(widget):
-    os.system("xfconf-query -c xfwm4 -p /general/inactive_opacity -s " + str(int(widget.get_value())))
+    os.system("xfconf-query -c xfwm4 -p /general/inactive_opacity -s {0}".format(str(int(widget.get_value()))))
 
 
 def get_move_opacity():
@@ -813,7 +786,7 @@ def get_move_opacity():
 
 
 def set_move_opacity(widget):
-    os.system("xfconf-query -c xfwm4 -p /general/move_opacity -s " + str(int(widget.get_value())))
+    os.system("xfconf-query -c xfwm4 -p /general/move_opacity -s {0}".format(str(int(widget.get_value()))))
 
 
 def get_resize_opacity():
@@ -821,7 +794,7 @@ def get_resize_opacity():
 
 
 def set_resize_opacity(widget):
-    os.system("xfconf-query -c xfwm4 -p /general/resize_opacity -s " + str(int(widget.get_value())))
+    os.system("xfconf-query -c xfwm4 -p /general/resize_opacity -s {0}".format(str(int(widget.get_value()))))
 
 
 def get_popup_opacity():
@@ -829,7 +802,7 @@ def get_popup_opacity():
 
 
 def set_popup_opacity(widget):
-    os.system("xfconf-query -c xfwm4 -p /general/popup_opacity -s " + str(int(widget.get_value())))
+    os.system("xfconf-query -c xfwm4 -p /general/popup_opacity -s {0}".format(str(int(widget.get_value()))))
 
 ####################################
 ### Methods for 'Advanced' page. ###
@@ -892,7 +865,7 @@ def get_activate_action():
 
 def set_activate_action(button, value):
     if button.get_active():
-        os.system("xfconf-query -c xfwm4 -p /general/activate_action -s " + value)
+        os.system("xfconf-query -c xfwm4 -p /general/activate_action -s {0}".format(value))
 
 
 # Accessibility
@@ -948,7 +921,7 @@ def set_urgent_blink(widget):
     set_generic(widget, "urgent_blink")
     if widget.get_active() == True:
         repeat_urgent_blink.set_sensitive(True)
-    elif widget.get_active() == False:
+    else:
         repeat_urgent_blink.set_sensitive(False)
         repeat_urgent_blink.set_active(False)
         set_repeat_urgent_blink_off()
@@ -997,7 +970,7 @@ def get_placement_ratio():
 
 
 def set_placement_ratio(widget):
-    os.system("xfconf-query -c xfwm4 -p /general/placement_ratio -s " + str(int(widget.get_value())))
+    os.system("xfconf-query -c xfwm4 -p /general/placement_ratio -s {0}".format(str(int(widget.get_value()))))
 
 
 def get_placement_mode():
@@ -1006,7 +979,7 @@ def get_placement_mode():
 
 def set_placement_mode(button, value):
     if button.get_active():
-        os.system("xfconf-query -c xfwm4 -p /general/placement_mode -s " + value)
+        os.system("xfconf-query -c xfwm4 -p /general/placement_mode -s {0}".format(value))
 
 
 # 'Are you sure?' window.
@@ -1074,7 +1047,7 @@ class SetLayout(Gtk.Window):
         os.system(execute)
         os.system('touch ~/.config/peppermint-control-center/keyboard_layout')
         os.system('chmod +x ~/.config/peppermint-control-center/keyboard_layout')
-        os.system('echo "#!/bin/sh\n' + execute + '" > ~/.config/peppermint-control-center/keyboard_layout')
+        os.system('echo "#!/bin/sh\n{0}" > ~/.config/peppermint-control-center/keyboard_layout'.format(execute))
 
     def getlist(self):
         layoutfile = ET.parse("/usr/share/X11/xkb/rules/base.xml")
@@ -1119,17 +1092,17 @@ class SetLayout(Gtk.Window):
             if str(obj[0]) == cm:
                 variantview.set_cursor(x)
                 variantview.scroll_to_cell(x)
-            x = x + 1
+            x += 1
 
     def set_layout(self, widget, var):
         try:
             select = variantview.get_selection()
             model, treeiter = select.get_selected()
-            execute = "setxkbmap " + model[treeiter][0]
+            execute = "setxkbmap {0}".format(model[treeiter][0])
             os.system(execute)
             os.system('touch ~/.config/peppermint-control-center/keyboard_layout')
             os.system('chmod +x ~/.config/peppermint-control-center/keyboard_layout')
-            os.system('echo "#!/bin/sh\n' + execute + '" > ~/.config/peppermint-control-center/keyboard_layout')
+            os.system('echo "#!/bin/sh\n{0}" > ~/.config/peppermint-control-center/keyboard_layout'.format(execute))
         except:
             pass
 
@@ -1147,7 +1120,7 @@ class SetLayout(Gtk.Window):
         if "variant:" in curvar:
             cv1 = curvar.split()
             current_variant = cv1[1].replace("\\n'", "")
-            command = command + " " + current_variant
+            command = "{0} {1}".format(command, current_variant)
 
         return current_layout, command
 
@@ -1184,8 +1157,7 @@ class SetLayout(Gtk.Window):
 
         layouts = self.getlist()
         for layout in layouts:
-            a = layout[0]
-            layoutstore.append([a])
+            layoutstore.append([layout[0]])
 
         select = layoutview.get_selection()
         select.connect("changed", self.fill_variants)
@@ -1195,7 +1167,7 @@ class SetLayout(Gtk.Window):
             if str(obj[0]) == cl:
                 layoutview.set_cursor(x)
                 layoutview.scroll_to_cell(x)
-            x = x + 1
+            x += 1
 
         layoutbox = Gtk.HBox()
         layoutscroll = Gtk.ScrolledWindow()
@@ -1315,7 +1287,8 @@ class KeyboardShortcut(Gtk.Window):
             if _alt.get_active():
                 newshortcut = newshortcut + "<Alt>"
 
-            if _shift.get_active() == False and _control.get_active() == False and _super.get_active() == False and _alt.get_active() == False:
+            if _shift.get_active() == False and _control.get_active() == False and _super.get_active() == False and \
+                    _alt.get_active() == False:
                 assign_void.set_markup("<b>Specify modifier(s)</b>")
             else:
                 newshortcut = newshortcut + newkey
@@ -1412,8 +1385,10 @@ class ControlCenter(Gtk.Window):
         global theme_box
         theme_box = Gtk.ComboBoxText()
         theme_box.connect("changed", set_theme)
+
         for theme in theme_list():
             theme_box.append_text(theme)
+
         theme_box.set_active(theme_index())
         theme_box_wrapper = Gtk.HBox()
         theme_box_wrapper.pack_start(theme_box, True, True, 20)
@@ -1473,13 +1448,17 @@ class ControlCenter(Gtk.Window):
         click_to_focus_label_box.pack_start(click_to_focus_void, True, True, 0)
         ctf_button1 = Gtk.RadioButton.new_with_label_from_widget(None, "Click to focus")
         ctf_button1.connect("toggled", set_click_to_focus, "true")
+
         if get_click_to_focus() == "true":
             ctf_button1.set_active(True)
+
         ctf_button2 = Gtk.RadioButton.new_from_widget(ctf_button1)
         ctf_button2.set_label("Focus follows mouse")
         ctf_button2.connect("toggled", set_click_to_focus, "false")
+
         if get_click_to_focus() == "false":
             ctf_button2.set_active(True)
+
         click_to_focus = Gtk.HBox()
         click_to_focus.pack_start(ctf_button1, True, True, 30)
         click_to_focus.pack_start(ctf_button2, True, True, 30)
@@ -1503,6 +1482,7 @@ class ControlCenter(Gtk.Window):
         focus_delay_box.pack_start(focus_delay_short, False, False, 0)
         focus_delay_box.pack_start(focus_delay, True, True, 10)
         focus_delay_box.pack_start(focus_delay_long, False, False, 0)
+
         if ctf_button1.get_active():
             focus_delay_box.set_sensitive(False)
 
@@ -1788,10 +1768,12 @@ class ControlCenter(Gtk.Window):
         delay.set_range(10, 1000)
         delay.set_increments(1, 1)
         delay.set_digits(0)
+
         try:
             delay.set_value(get_delay())
         except:
             delay.set_value(500)
+
         delay.connect("value-changed", keys_apply)
         delay_label_box = Gtk.HBox()
         delay_label_box.pack_start(delay_label, False, False, 20)
@@ -1803,10 +1785,12 @@ class ControlCenter(Gtk.Window):
         interval.set_range(1, 50)
         interval.set_increments(1, 1)
         interval.set_digits(0)
+
         try:
             interval.set_value(get_interval())
         except:
             interval.set_value(20)
+
         interval.connect("value-changed", keys_apply)
         interval_label_box = Gtk.HBox()
         interval_label_box.pack_start(interval_label, False, False, 20)
@@ -1837,10 +1821,12 @@ class ControlCenter(Gtk.Window):
         acceleration.set_range(0, 10)
         acceleration.set_increments(1, 1)
         acceleration.set_digits(0)
+
         try:
             acceleration.set_value(get_acceleration())
         except:
             acceleration.set_value(2)
+
         acceleration.connect("value-changed", pntr_apply)
         acceleration_label_box = Gtk.HBox()
         acceleration_label_box.pack_start(acceleration_label, False, False, 20)
@@ -1852,10 +1838,12 @@ class ControlCenter(Gtk.Window):
         threshold.set_range(0, 10)
         threshold.set_increments(1, 1)
         threshold.set_digits(0)
+
         try:
             threshold.set_value(get_threshold())
         except:
             threshold.set_value(2)
+
         threshold.connect("value-changed", pntr_apply)
         threshold_label_box = Gtk.HBox()
         threshold_label_box.pack_start(threshold_label, False, False, 20)
@@ -1977,24 +1965,15 @@ class ControlCenter(Gtk.Window):
 
         xfcestore = Gtk.ListStore(str, str)
         get_xfce = get_xfce_shortcuts()
+        move_directions = ['move_window_workspace', 'move_window_right_key', 'move_window_left_key',
+                           'move_window_up_key', 'up_workspace_key', 'down_workspace_key', 'switch_window_key',
+                           'raise_window_key']
         for line in get_xfce:
             a = line.split()
-            if "move_window_workspace_" in a[0]:
-                continue
-            elif "move_window_right_key" in a[0]:
-                continue
-            elif "move_window_left_key" in a[0]:
-                continue
-            elif "move_window_up_key" in a[0]:
-                continue
-            elif "up_workspace_key" in a[0]:
-                continue
-            elif "down_workspace_key" in a[0]:
-                continue
-            elif "switch_window_key" in a[0]:
-                continue
-            elif "raise_window_key" in a[0]:
-                continue
+            for direction in move_directions:
+                if direction in a[0]:
+                    continue
+
             xfcestore.append([a[0], a[1]])
 
         xfceview = Gtk.TreeView(model=xfcestore)
@@ -2012,6 +1991,7 @@ class ControlCenter(Gtk.Window):
         global bindstore
         bindstore = Gtk.ListStore(str, str)
         get_bind = get_xbindkeys()
+
         for line in get_bind:
             a = line.split("\n")
             bindstore.append([a[0], a[1]])
@@ -2100,10 +2080,12 @@ class ControlCenter(Gtk.Window):
         frame_opacity.set_range(0, 100)
         frame_opacity.set_increments(1, 1)
         frame_opacity.set_digits(0)
+
         try:
             frame_opacity.set_value(get_frame_opacity())
         except:
             frame_opacity.set_value(100)
+
         frame_opacity.connect("value-changed", set_frame_opacity)
         frame_opacity_box = Gtk.HBox()
         frame_opacity_box.pack_start(frame_opacity_left, False, False, 15)
@@ -2123,10 +2105,12 @@ class ControlCenter(Gtk.Window):
         inactive_opacity.set_range(0, 100)
         inactive_opacity.set_increments(1, 1)
         inactive_opacity.set_digits(0)
+
         try:
             inactive_opacity.set_value(get_inactive_opacity())
         except:
             inactive_opacity.set_value(100)
+
         inactive_opacity.connect("value-changed", set_inactive_opacity)
         inactive_opacity_box = Gtk.HBox()
         inactive_opacity_box.pack_start(inactive_opacity_left, False, False, 15)
@@ -2146,10 +2130,12 @@ class ControlCenter(Gtk.Window):
         move_opacity.set_range(0, 100)
         move_opacity.set_increments(1, 1)
         move_opacity.set_digits(0)
+
         try:
             move_opacity.set_value(get_move_opacity())
         except:
             move_opacity.set_value(100)
+
         move_opacity.connect("value-changed", set_move_opacity)
         move_opacity_box = Gtk.HBox()
         move_opacity_box.pack_start(move_opacity_left, False, False, 15)
@@ -2169,10 +2155,12 @@ class ControlCenter(Gtk.Window):
         resize_opacity.set_range(0, 100)
         resize_opacity.set_increments(1, 1)
         resize_opacity.set_digits(0)
+
         try:
             resize_opacity.set_value(get_resize_opacity())
         except:
             resize_opacity.set_value(100)
+
         resize_opacity.connect("value-changed", set_resize_opacity)
         resize_opacity_box = Gtk.HBox()
         resize_opacity_box.pack_start(resize_opacity_left, False, False, 15)
@@ -2192,10 +2180,12 @@ class ControlCenter(Gtk.Window):
         popup_opacity.set_range(0, 100)
         popup_opacity.set_increments(1, 1)
         popup_opacity.set_digits(0)
+
         try:
             popup_opacity.set_value(get_popup_opacity())
         except:
             popup_opacity.set_value(100)
+
         popup_opacity.connect("value-changed", set_popup_opacity)
         popup_opacity_box = Gtk.HBox()
         popup_opacity_box.pack_start(popup_opacity_left, False, False, 15)
@@ -2220,8 +2210,10 @@ class ControlCenter(Gtk.Window):
 
         global effects_box
         effects_box = Gtk.VBox()
+
         if get_use_compositing() == False:
             effects_box.set_sensitive(False)
+
         effects_box.pack_start(effects_top, False, False, 10)
         effects_box.pack_start(frame_opacity_label_box, False, False, 0)
         effects_box.pack_start(frame_opacity_box, False, False, 0)
@@ -2308,18 +2300,24 @@ class ControlCenter(Gtk.Window):
         activate_action_box = Gtk.VBox()
         activate_action_bring = Gtk.RadioButton.new_with_label_from_widget(None, "Bring window on current workspace")
         activate_action_bring.connect("toggled", set_activate_action, "bring")
+
         if get_activate_action() == "bring":
             activate_action_bring.set_active(True)
+
         activate_action_switch = Gtk.RadioButton.new_from_widget(activate_action_bring)
         activate_action_switch.set_label("Switch to window's workspace")
         activate_action_switch.connect("toggled", set_activate_action, "switch")
+
         if get_activate_action() == "switch":
             activate_action_switch.set_active(True)
+
         activate_action_none = Gtk.RadioButton.new_from_widget(activate_action_bring)
         activate_action_none.set_label("Do nothing")
         activate_action_none.connect("toggled", set_activate_action, "none")
+
         if get_activate_action() == "none":
             activate_action_none.set_active(True)
+
         activate_action_box.pack_start(activate_action_bring, False, False, 0)
         activate_action_box.pack_start(activate_action_switch, False, False, 0)
         activate_action_box.pack_start(activate_action_none, False, False, 0)
@@ -2363,6 +2361,7 @@ class ControlCenter(Gtk.Window):
         tile_on_move = Gtk.CheckButton("Automatically tile windows when moving toward the screen edge")
         tile_on_move.set_active(get_tile_on_move())
         tile_on_move.connect("toggled", set_tile_on_move)
+
         if get_restore_on_move() == True:
             tile_on_move.set_sensitive(True)
         else:
@@ -2383,6 +2382,7 @@ class ControlCenter(Gtk.Window):
         repeat_urgent_blink = Gtk.CheckButton("Keep urgent windows blinking repeatedly")
         repeat_urgent_blink.set_active(get_repeat_urgent_blink())
         repeat_urgent_blink.connect("toggled", set_repeat_urgent_blink)
+
         if get_urgent_blink() == True:
             repeat_urgent_blink.set_sensitive(True)
         else:
@@ -2455,10 +2455,12 @@ class ControlCenter(Gtk.Window):
         placement_ratio.set_range(0, 100)
         placement_ratio.set_increments(1, 1)
         placement_ratio.set_digits(0)
+
         try:
             placement_ratio.set_value(get_placement_ratio())
         except:
             placement_ratio.set_value(20)
+
         placement_ratio.connect("value-changed", set_placement_ratio)
         placement_ratio_box = Gtk.HBox()
         placement_ratio_box.pack_start(placement_ratio_small, False, False, 15)
@@ -2473,13 +2475,17 @@ class ControlCenter(Gtk.Window):
 
         placement_mode_center = Gtk.RadioButton.new_with_label_from_widget(None, "At the center of the screen")
         placement_mode_center.connect("toggled", set_placement_mode, "center")
+
         if get_placement_mode() == "center":
             placement_mode_center.set_active(True)
+
         placement_mode_mouse = Gtk.RadioButton.new_from_widget(placement_mode_center)
         placement_mode_mouse.set_label("Under the pointer")
         placement_mode_mouse.connect("toggled", set_placement_mode, "mouse")
+
         if get_placement_mode() == "mouse":
             placement_mode_mouse.set_active(True)
+
         placement_mode_box = Gtk.VBox()
         placement_mode_box.pack_start(placement_mode_center, False, False, 0)
         placement_mode_box.pack_start(placement_mode_mouse, False, False, 0)
