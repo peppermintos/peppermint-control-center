@@ -152,7 +152,11 @@ def theme_list():
 
 
 def theme_index():
-    return theme_list().index(get_theme())
+    try:
+        return theme_list().index(get_theme())
+    except ValueError as e:
+        print("DEBUG: Caught exception '{0}', using 'Peppermix' as default.".format(e))
+        return theme_list().index('Peppermix')
 
 
 def set_theme(widget):
