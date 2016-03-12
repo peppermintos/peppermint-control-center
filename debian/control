@@ -3,10 +3,10 @@ Section: x11
 Priority: required
 Maintainer: Kendall Weaver <kendall@peppermintos.com>
 Build-Depends: debhelper (>= 5.0.0)
-Standards-Version: 3.8.4
+Standards-Version: 3.9.5
 
 Package: peppermint-control-center
-Depends: python3, python3-gi, xfwm4, xbindkeys
+Depends: python3, python3-gi, xfwm4, xbindkeys, ${misc:Depends}
 Conflicts: xbindkeys-config
 Architecture: all 
 Description:  Window manager and input settings for Peppermint OS.

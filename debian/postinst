@@ -1,0 +1,9 @@
+#!/bin/sh
+set -e
+
+     if [ ! -d /usr/local/share/themes ]; then
+       mkdir -p /usr/local/share/themes && cp -r /usr/share/peppermint/peppermint-control-center/Xfwm4_Fallback /usr/local/share/themes/; else
+         cp -r /usr/share/peppermint/peppermint-control-center/Xfwm4_Fallback /usr/local/share/themes/
+     fi
+
+#DEBHELPER#

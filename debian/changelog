@@ -1,7 +1,9 @@
 peppermint-control-center (0.2.2) trusty; urgency=low
 
-  *  (Brian) Catch theme exception which was causing launch failure on non-xfwm4 themed setups.
-  *  (Brian) Fix formatting of pointer option, for mouse Left handed button layout.
+  *  (Brian) Catch theme exception which was causing
+  *  launch failure on non-xfwm4 themed setups.
+  *  (Brian) Fix formatting of pointer option
+  *  for mouse Left handed button layout.
   *  (Mark) Added Xfce4_Fallback theme.
 
  -- Mark Greaves (PCNetSpec) <mark@pcnetspec.co.uk>  12 Mar 2016 16:10:00 +0000

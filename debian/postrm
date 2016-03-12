@@ -1,0 +1,9 @@
+#!/bin/sh
+
+set -e
+
+     if [ -d /usr/local/share/themes/Xfwm4_Fallback ]; then
+       rm -rf /usr/local/share/themes/Xfwm4_Fallback
+     fi
+
+#DEBHELPER#
