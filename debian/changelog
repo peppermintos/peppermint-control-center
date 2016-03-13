@@ -1,4 +1,4 @@
-peppermint-control-center (0.2.2) trusty; urgency=low
+peppermint-control-center (0.2.2) xenial; urgency=low
 
   *  (Brian) Catch theme exception which was causing
   *  launch failure on non-xfwm4 themed setups.
