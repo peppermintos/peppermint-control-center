@@ -497,10 +497,16 @@ def pntr_apply(widget):
 
     dconf_file = os.path.expanduser("~/.config/lxsession/Peppermint/desktop.conf")
     dconfig = ConfigParser()
-    dconfig.read(dconf_file)
-    dconfig['Mouse']['LeftHand'] = "1" if lefthand_active() else "0"
-    with open(dconf_file, 'w') as dconfig_file:
-        dconfig.write(dconfig_file)
+
+    try:
+        dconfig.read(dconf_file)
+        dconfig['Mouse']['LeftHand'] = "1" if lefthand_active() else "0"
+
+        with open(dconf_file, 'w') as dconfig_file:
+            dconfig.write(dconfig_file)
+
+    except (configparser.DuplicateOptionError, IOError) as e:
+        print("Unable to set config option LeftHand, caught exception: {0}".format(e))
 
     try:
         os.system("ppmcc-load")
