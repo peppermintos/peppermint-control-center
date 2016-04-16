@@ -505,7 +505,7 @@ def pntr_apply(widget):
         with open(dconf_file, 'w') as dconfig_file:
             dconfig.write(dconfig_file)
 
-    except (configparser.DuplicateOptionError, IOError) as e:
+    except Exception as e:
         print("Unable to set config option LeftHand, caught exception: {0}".format(e))
 
     try:
