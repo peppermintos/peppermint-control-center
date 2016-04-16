@@ -495,9 +495,9 @@ def pntr_apply(widget):
         print("ERROR: Could not save new configuration.")
         sys.exit(1)
 
-
     dconf_file = os.path.expanduser("~/.config/lxsession/Peppermint/desktop.conf")
-    dconfig = ConfigParser().read(dconf_file)
+    dconfig = ConfigParser()
+    dconfig.read(dconf_file)
     dconfig['Mouse']['LeftHand'] = "1" if lefthand_active() else "0"
     with open(dconf_file, 'w') as dconfig_file:
         dconfig.write(dconfig_file)
