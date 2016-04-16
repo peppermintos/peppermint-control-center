@@ -500,7 +500,7 @@ def pntr_apply(widget):
 
     try:
         dconfig.read(dconf_file)
-        dconfig['Mouse']['LeftHand'] = "1" if lefthand_active() else "0"
+        dconfig['Mouse']['LeftHand'] = "1" if lefthanded.get_active() else "0"
 
         with open(dconf_file, 'w') as dconfig_file:
             dconfig.write(dconfig_file)
