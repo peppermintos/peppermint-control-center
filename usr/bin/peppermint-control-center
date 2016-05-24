@@ -1184,8 +1184,8 @@ class SetLayout(Gtk.Window):
         variantscroll = Gtk.ScrolledWindow()
         layoutscroll.add(layoutview)
         variantscroll.add(variantview)
-        layoutbox.pack_start(layoutscroll, False, False, 0)
-        layoutbox.pack_start(variantscroll, True, True, 0)
+        layoutbox.pack_start(layoutscroll, True, True, 0)
+        layoutbox.pack_start(variantscroll, True, True, 5)
 
         entryt = Gtk.Entry()
         entryt.set_width_chars(35)

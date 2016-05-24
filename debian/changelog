@@ -1,3 +1,19 @@
+peppermint-control-center (0.2.4) xenial; urgency=low
+
+  *  (Mark) Set "layoutbox.pack_start(variantscroll, True, True, 5)"
+  *  adding a 5 pixel padding to more clearly define the separation
+  *  between the two columns
+
+ -- Mark Greaves (PCNetSpec) <mark@pcnetspec.co.uk>  24 May 2016 16:32:00 +0000
+
+peppermint-control-center (0.2.3) xenial; urgency=low
+
+  *  (Mark) Set "layoutbox.pack_start(layoutscroll, True, True, 0)"
+  *  to fix "Layout" column in Gtk.HBox not displaying
+  *  (Mark) Changed icon to new logo
+
+ -- Mark Greaves (PCNetSpec) <mark@pcnetspec.co.uk>  24 May 2016 15:55:00 +0000
+
 peppermint-control-center (0.2.2) xenial; urgency=low
 
   *  (Brian) Catch theme exception which was causing
