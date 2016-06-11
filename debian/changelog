@@ -1,3 +1,13 @@
+peppermint-control-center (0.2.5) xenial; urgency=low
+
+  *  Replace all "&&" with ";" in ppmcc-load
+  *  Replace all "&&" with ";" in ppmcc-startup
+  *  so both script continues if a command fails due to a missing
+  *  ppmcc configuration script such as:-
+  *  $HOME/.config/peppermint-control-center/keyboard_layout script
+
+ -- Mark Greaves (PCNetSpec) <mark@pcnetspec.co.uk>  11 Jun 2016 15:50:00 +0000
+
 peppermint-control-center (0.2.4) xenial; urgency=low
 
   *  (Mark) Set "layoutbox.pack_start(variantscroll, True, True, 5)"
